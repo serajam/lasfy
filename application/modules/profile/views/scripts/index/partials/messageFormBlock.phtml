@@ -1,0 +1,56 @@
+<?php
+$isOwner = $this->add->userId == Core_Model_User::getInstance()->userId && MessagesAccess::getReplierId();
+?>
+
+<div class="row">
+    <div class="large-12 columns">
+        <?php
+        if ($this->repliers) {
+            $repliersMessages = MessagesAccess::getAddMessagesByUser($this->addId);
+            echo '<b>', __('repliers'), ':</b> ';
+            /** @var User $replier */
+            foreach ($this->repliers as $replier) {
+                $messagesCount = isset($repliersMessages[$replier->userId]) ? $repliersMessages[$replier->userId] : 0;
+                $link          = $this->domainLink(null, true);
+                echo '<a href = "', $link, 'index/messages/', $this->type, '/', $this->addId, '/reid/', $replier->userId, '">', $replier->getName(), '(', $messagesCount, ')</a>', ' ';
+            }
+        }
+        ?>
+        <hr>
+    </div>
+</div>
+
+<div class="row">
+    <div class="large-7 columns">
+        <?php
+        if ($this->userMessages) {
+
+            /** @var Message $message */
+            foreach ($this->userMessages as $message) {
+                ?>
+                <article>
+                    <h6><a href="#">
+                            <?php echo $message->getSenderName() ?></a>
+                        <?php echo date('d/m/y H:i', strtotime($message->sendDate)) ?>
+                    </h6>
+
+                    <p>
+                        <?php echo $message->message ?>
+                    </p>
+                </article>
+                <hr>
+                <?php
+            }
+        }
+        ?>
+    </div>
+    <aside class="large-5 columns">
+        <?php
+        if ($this->add->userId == Core_Model_User::getInstance()->userId && MessagesAccess::getReplierId()) {
+            echo $this->service->getFormLoader()->getForm('MessageForm');
+        } elseif ($this->add->userId != Core_Model_User::getInstance()->userId) {
+            echo $this->service->getFormLoader()->getForm('MessageForm');
+        }
+        ?>
+    </aside>
+</div>

@@ -1,0 +1,37 @@
+<?php echo $this->render('header.phtml'); ?>
+    <body>
+<div id="pageContent">
+    <div class="contain-to-grid header_nav">
+        <nav class="top-bar" data-topbar role="navigation">
+            <ul class="title-area">
+                <!-- Title Area -->
+                <li class="name">
+                    <h1><a class="aTitle" href="<?php echo $this->domainLink(1, true); ?>">LASFY</a></h1>
+                </li>
+                <li class="addAdLi visible-for-small-down">
+                    <button name="addAdS" id="addAdS" type="button"
+                            onclick="location.href = '<?php echo $this->domainLink(1, true); ?>add-ad';"
+                            class="button alert"><?php echo __('addAd') ?></button>
+                </li>
+                <li class="toggle-topbar profileMenu"><a href="#" class="fi-list label"><span></span></a></li>
+            </ul>
+
+            <section class="top-bar-section">
+                <ul class="right nav-bar" id="top-menu">
+                    <?php echo $this->siteMenu(); ?>
+                </ul>
+            </section>
+        </nav>
+    </div>
+    <!-- #wrapper -->
+
+    <section class="section_light">
+        <div class="full-height">
+            <!-- #content-->
+            <?php echo $this->layout()->content; ?>
+        </div>
+    </section>
+</div>
+<input type="hidden" id="session_timer"/>
+<?php
+echo $this->render('footer.phtml');

@@ -1,0 +1,264 @@
+<script type="text/javascript">
+
+    // The script to close/open the ad was moved to basic.js!!!
+
+    $(document).ready(function () {
+
+        var mainHost = "<?php echo $this->domainLink(1, true); ?>";
+        var mainHostImage = "<?php echo $this->domainLink(1); ?>";
+        var spinnerLink = mainHostImage + 'images/loading.gif';
+        var closeLink = mainHostImage + 'images/close.png';
+
+        function makeRequest() {
+            $('img#closeIcon').remove();
+            $('#searchTags').parent()
+                .append('<img class="spinnerRound" ' + 'src="' + spinnerLink + '" alt="" />');
+            $('#searchForm').ajaxSubmit({
+                dataType: 'json',
+                success: function (responseText) {
+                    makeAdsBlocks(responseText);
+                    $('.spinnerRound').remove();
+                    $('#searchForm').attr('action', mainHost + 'default/search/get-ads');
+                    if (!$('img#closeIcon').length && $('#searchTags').tagEditor('getTags')[0].tags.length) {
+                        $('#searchTags').parent()
+                            .append('<img id="closeIcon" ' + 'src="' + closeLink + '" alt="" />');
+                    }
+                    $('#mainSearchContent').removeClass('hide');
+                    $('#mainSearchForm').removeClass('mainSearchFormClass');
+                    return false;
+                },
+                complete: function (responseText) {
+                    if (responseText.error == 'true') {
+                        // @todo show pretty error
+                        alert('<?php echo __("access_error") ?>');
+                        $('img.spinnerRound').remove();
+                        $('#searchForm').attr('action', mainHost + 'default/search/get-ads');
+                        if (!$('img#closeIcon').length && $('#searchTags').tagEditor('getTags')[0].tags.length) {
+                            $('#searchTags').parent()
+                                .append('<img id="closeIcon" ' + 'src="' + closeLink + '" alt="" />');
+                        }
+                    }
+
+                    return false;
+                }
+            });
+            return false;
+        }
+
+        $('.searchTagsSet').tagEditor({
+            <?php if ($this->tags) { ?>
+            initialTags: [<?php echo "'" . implode("','", $this->tags) . "'"; ?>],
+            <?php } ?>
+            placeholder: '<?php echo __('addTags') ?>',
+            clickDelete: true,
+            delimiter: tagsDelimiters,
+            sortable: false,
+
+            autocomplete: {
+                source: function (request, response) {
+                    $.ajax({
+                        url: mainHost + 'default/search/get-tags',
+                        dataType: "json",
+                        data: {
+                            tag: request.term
+                        },
+                        success: function (responseText) {
+                            response(responseText.data);
+                        }
+                    });
+                },
+                delay: 0, // show suggestions immediately
+                position: {collision: 'flip'},
+                forceLowercase: true,
+                minLength: 2
+            },
+            onChange: function () {
+                if (!$('#closeIcon').length) {
+                    $('#searchTags').parent()
+                        .append('<img id="closeIcon" ' + 'src="' + closeLink + '" alt="" />');
+                }
+            }
+        });
+
+        <?php if (!count($this->tags)){ ?>
+        /*
+         * Need to clear previous search conditions
+         * if user went to another page.
+         */
+        $('ul.tag-editor li:not(:first)').remove();
+        $('#searchTags').val('');
+        <?php } ?>
+
+        $('.plus').click(function () {
+            idArray = $(this).attr('id').split('_');
+            id = idArray[3];
+            prefix = idArray[0];
+            $('#' + prefix + id).show('fast');
+            $(this).removeClass('showElem');
+            $(this).addClass('hideElem');
+            $('#' + prefix + '_minus_Id_' + id).removeClass('hideElem');
+            $('#' + prefix + '_minus_Id_' + id).addClass('showElem');
+            return false;
+        });
+
+        $('.minus').click(function () {
+            idArray = $(this).attr('id').split('_');
+            id = idArray[3];
+            prefix = idArray[0];
+            $('#' + prefix + id).hide('fast');
+            $(this).removeClass('showElem');
+            $(this).addClass('hideElem');
+            $('#' + prefix + '_plus_Id_' + id).removeClass('hideElem');
+            $('#' + prefix + '_plus_Id_' + id).addClass('showElem');
+            return false;
+        });
+
+        $('#search').click(function (event) {
+            event.preventDefault();
+            makeRequest();
+            $('#search').blur();
+
+            return false;
+        });
+
+        $('ul.tag-editor').on('click', '.tag-editor-delete', deleteTag);
+
+        function deleteTag(event) {
+            event.preventDefault();
+            makeRequest();
+        }
+
+        $('.tagsField').on('click', '#closeIcon', function (event) {
+            event.preventDefault();
+            $('ul.tag-editor').off('click', '.tag-editor-delete', deleteTag);
+            var tags = $('#searchTags').tagEditor('getTags')[0].tags;
+            for (i = 0; i < tags.length; i++) {
+                $('#searchTags').tagEditor('removeTag', tags[i]);
+            }
+            makeRequest();
+            $('ul.tag-editor').on('click', '.tag-editor-delete', deleteTag);
+            $('img#closeIcon').remove();
+            return false;
+        });
+
+        function dealWithCheckboxesOfSearchCriteria(mainCheckboxElem, secondCheckboxElem, thirdCheckboxElem, panel1, panel2, panel3) {
+            if (mainCheckboxElem.checked) {
+                if (secondCheckboxElem.prop('checked') && thirdCheckboxElem.prop('checked')) {
+                    $('.tab-title').removeClass('twoTabs');
+                    $('.tab-title').addClass('threeTabs');
+                }
+                if ((!secondCheckboxElem.prop('checked') && thirdCheckboxElem.prop('checked')) ||
+                    (secondCheckboxElem.prop('checked') && !thirdCheckboxElem.prop('checked'))) {
+                    $('.tab-title').removeClass('oneTabs');
+                    $('.tab-title').addClass('twoTabs');
+                }
+                if (!secondCheckboxElem.prop('checked') && !thirdCheckboxElem.prop('checked')) {
+                    $('.tab-title').addClass('oneTabs');
+                }
+                $('a[href="#' + panel1 + '"]').parent().removeClass('hide');
+                $('#' + panel1).removeClass('hide');
+                $('a[href="#' + panel1 + '"]').click();
+                $('#theForce').html('');
+            } else {
+                if (secondCheckboxElem.prop('checked') && thirdCheckboxElem.prop('checked')) {
+                    $('a[href="#' + panel1 + '"]').parent().addClass('hide');
+                    $('#' + panel1).addClass('hide');
+                    $('.tab-title').removeClass('threeTabs');
+                    $('.tab-title').addClass('twoTabs');
+                    $('a[href="#' + panel2 + '"]').click();
+                }
+                if ((!secondCheckboxElem.prop('checked') && thirdCheckboxElem.prop('checked')) ||
+                    (secondCheckboxElem.prop('checked') && !thirdCheckboxElem.prop('checked'))) {
+                    $('a[href="#' + panel1 + '"]').parent().addClass('hide');
+                    $('#' + panel1).addClass('hide');
+                    $('.tab-title').removeClass('threeTabs');
+                    $('.tab-title').addClass('oneTabs');
+                }
+                if (!secondCheckboxElem.prop('checked') && thirdCheckboxElem.prop('checked')) {
+                    $('a[href="#' + panel2 + '"]').click();
+                }
+                if (secondCheckboxElem.prop('checked') && !thirdCheckboxElem.prop('checked')) {
+                    $('a[href="#' + panel3 + '"]').click();
+                }
+                if (!secondCheckboxElem.prop('checked') && !thirdCheckboxElem.prop('checked')) {
+                    $('a[href="#' + panel1 + '"]').parent().addClass('hide');
+                    $('#' + panel1).addClass('hide');
+                    $('#' + panel1).removeClass('active');
+                    $('.tab-title').removeClass('oneTabs');
+                    $('#theForce').html('May the force be with you!');
+                }
+            }
+            return false;
+        }
+
+        $('#separateSearch-vacancy').change(function () {
+            dealWithCheckboxesOfSearchCriteria(
+                this,
+                $('#separateSearch-resume'),
+                $('#separateSearch-partners'),
+                'panel2-2',
+                'panel2-1',
+                'panel2-3'
+            )
+        });
+
+        $('#separateSearch-resume').change(function () {
+            dealWithCheckboxesOfSearchCriteria(
+                this,
+                $('#separateSearch-vacancy'),
+                $('#separateSearch-partners'),
+                'panel2-3',
+                'panel2-1',
+                'panel2-2'
+            )
+        });
+
+        $('#separateSearch-partners').click(function () {
+            dealWithCheckboxesOfSearchCriteria(
+                this,
+                $('#separateSearch-vacancy'),
+                $('#separateSearch-resume'),
+                'panel2-1',
+                'panel2-3',
+                'panel2-2'
+            )
+        });
+
+        $('#readMore').click(function () {
+            $('#readLess').removeClass('hide');
+            $('#readMore').addClass('hide');
+            $('.homepage-text').removeClass('text-hidden');
+            return false;
+        });
+
+        $('#readLess').click(function () {
+            $('#readMore').removeClass('hide');
+            $('#readLess').addClass('hide');
+            $('.homepage-text').addClass('text-hidden');
+            return false;
+        });
+
+        $('#show_more_parameters').click(function () {
+            var hiddenElements = $('#searchForm .additional-params-hide');
+            var showedElements = $('#searchForm .additional-params-show');
+
+            $.each(hiddenElements, function (_, item) {
+                $(item).removeClass('additional-params-hide');
+                $(item).addClass('additional-params-show');
+            });
+
+            $.each(showedElements, function (_, item) {
+                $(item).removeClass('additional-params-show');
+                $(item).addClass('additional-params-hide');
+            });
+
+
+            return false;
+        });
+
+        <?php if ($this->show){  ?>
+        $('#search').trigger('click');
+        <?php } ?>
+    });
+
+</script>

@@ -1,0 +1,17 @@
+<?php echo $this->render('header.phtml') ?>
+<div class="b-wrap">
+    <div class="b-holder">
+        <?php echo $this->topPanel() ?>
+        <div class="b-page">
+            <div class="b-content">
+                <div class="h-content">
+                    <div class="b-tender">
+                        <?php echo $this->layout()->content ?>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<?php echo $this->render('footer.phtml') ?>

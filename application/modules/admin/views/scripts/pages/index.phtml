@@ -1,0 +1,79 @@
+<div class="row">
+    <?php
+    $host        = $this->domainLink();
+    $editLink    = $host . 'pages/edit/';
+    $deleteLink  = $host . $this->controller . '/delete/';
+    $clearFilter = $host . $this->controller . '/index/';
+    echo $this->notification($this->service);
+    echo '<div id="' . $this->container . '">';
+    echo $this->buttonLink(
+        $editLink,
+        __('add_page'),
+        'id="add-' . $this->container . '"',
+        'small'
+    );
+    /*  echo $this->buttonLink(
+          $clearFilter,
+          __('clear_filter'),
+          'clear-' . $this->container
+      );*/
+    echo '<hr>';
+
+    /* $filterForm = $this->service->getPagesFilterForm();
+     $filterForm->getElement('lang')->setValue($this->params['lang']);
+     $filterForm->getElement('pageType')->setValue($this->params['pageType']);
+     echo $filterForm;*/
+
+    $actions = [
+        'edit-' . $this->container   => [
+            'link'              => $editLink,
+            'icon_class'        => 'pencil',
+            'additional_params' => ['lang' => 'lang', 'slug' => 'slug']
+        ],
+        'delete-' . $this->container => [
+            'link'              => $deleteLink,
+            'icon_class'        => 'trash',
+            'additional_params' => ['lang' => 'lang', 'slug' => 'slug']
+        ]
+    ];
+    $fields  = [
+        'title' => ['key' => 'title'],
+        'slug'  => ['key' => 'slug'],
+        'lang'  => [
+            'key'              => 'lang',
+            'closure_function' => function ($item) {
+                $languages = Zend_Registry::get('types')['language'];
+                $languages = array_flip($languages);
+
+                return $languages[$item->lang];
+            }
+        ],
+    ];
+
+    echo $this->editorList($this->collection, $actions, $fields);
+    if (!empty($this->collection) && $this->collection->count() > 0) {
+        echo $this->paginationControl(
+            $this->collection->getPaginator(),
+            'Sliding',
+            '_paginationPages.phtml',
+            $this->params
+        );
+    }
+    echo '</div>';
+    ?>
+</div>
+<?php
+echo $this->partial(
+    $this->controller . '/partials/_windows.phtml',
+    [
+        'container' => $this->container,
+        'service'   => $this->service
+    ]
+);
+$this->scripts = $this->partial(
+    $this->controller . '/partials/_ajaxHelpers.phtml',
+    [
+        'container' => $this->container,
+        'service'   => $this->service
+    ]
+);

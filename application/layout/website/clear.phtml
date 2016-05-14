@@ -1,0 +1,26 @@
+<?php echo $this->render('header.phtml'); ?>
+<body>
+<div id="head">
+    <div class="alligner">
+        <a href="<?php echo $this->domainLink(1) ?>">
+            <img class="logo" src="<?php echo $this->domainLink(1) ?>images/logo.jpg" alt=""/>
+        </a>
+    </div>
+</div>
+<!-- #head-->
+<div id="wrapper">
+    <div id="header">
+        <ul id="menu">
+            <?php echo $this->siteMenu(); ?>
+        </ul>
+    </div>
+    <!-- #header-->
+    <?php echo $this->layout()->content; ?>
+    <!-- #content-->
+</div>
+<!-- #wrapper -->
+<?php
+echo $this->render('footer.phtml');
+?>
+</body>
+</html>

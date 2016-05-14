@@ -1,0 +1,40 @@
+<?php
+$host  = $this->domainLink();
+$users = $this->users;
+
+if (empty($users) || !$users->count()) {
+    echo '<div class="row">' . __('no_users_in_system') . '</div>';
+
+    return;
+}
+
+?>
+    <div class="row">
+        <?php
+
+        echo $this->partial(
+            'users/users/listusers.phtml',
+            [
+                'users' => $users,
+                'host'  => $host
+            ]
+        );
+
+        if ($users->count() > 0) {
+            echo $this->paginationControl(
+                $users->getPaginator(),
+                'Sliding',
+                '_pagination.phtml'
+            );
+        }
+        ?>
+    </div>
+<?php
+
+$this->scripts .= $this->partial(
+    'users/users/_windows.phtml',
+    [
+        'service' => $this->service
+    ]
+);
+$this->scripts .= $this->partial('users/users/_scripts.phtml');

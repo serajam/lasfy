@@ -1,0 +1,45 @@
+<?php
+if (!$this->conversations) {
+    echo '<div class="row">
+  <div class="large-12 columns"><h3>' . __('no_conversations') . '</h3></div></div>';
+
+    return false;
+}
+
+?>
+
+<div class="row">
+    <div class="large-12 columns">
+        <?php
+
+        $messages = MessagesAccess::getAllAddNewMessages($this->conversations->getIds());
+
+        /** @var Conversation $conversation */
+        foreach ($this->conversations as $conversation) {
+            $type   = $conversation->getType() == MessagesAccess::VACANCY_TYPE ? __('vacancy') : __('resume');
+            $typeId = $conversation->getType() == MessagesAccess::VACANCY_TYPE ? 'vid' : 'rid';
+
+            $count = isset($messages[$conversation->getConversationId()]) ? $messages[$conversation->getConversationId()] : 0;
+            $link  = $this->domainLink(1, true) . 'profile/index/messages/' . $typeId . '/' . $conversation->getConversationId();
+            ?>
+            <div class="panel">
+                <div class="row">
+                    <div class="large-4 columns">
+                        <h3><a href="<?php echo $link; ?>">
+                                <?php echo $type, ': ', $this->escape($conversation->getName()),
+                                ' <span class="fs14 messagesCount"> (', $count, ')</span>'; ?>
+                            </a></h3>
+                    </div>
+                    <div class="large-8 columns">
+                        <?php
+                        $date = date('d/m/y H:i', strtotime($conversation->getLastMessageDate()));
+                        echo '(', $date, ') ', $conversation->getLastMessageAuthor(), ': ', $conversation->getLastMessage() ?>
+                    </div>
+                </div>
+            </div>
+            <hr>
+            <?php
+        }
+        ?>
+    </div>
+</div>

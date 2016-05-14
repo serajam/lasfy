@@ -1,0 +1,206 @@
+<script type="application/javascript">
+    $(document).ready(function () {
+        var spinnerLink = "<?php echo $this->domainLink(1) . 'images/ajax-loader.gif'; ?>";
+
+        var closeButtonName = "<?php echo $this->translation('close')?>";
+
+        $('.tagsSet').tagEditor({
+            placeholder: '<?php echo __('addTags') ?>',
+            clickDelete: true,
+            delimiter: tagsDelimiters,
+            sortable: false,
+            autocomplete: {
+                source: function (request, response) {
+                    $.ajax({
+                        url: '<?php echo $this->domainLink(1, true) ?>' + 'default/search/get-tags',
+                        dataType: "json",
+                        data: {
+                            tag: request.term
+                        },
+                        success: function (responseText) {
+                            response(responseText.data);
+                        }
+                    });
+                },
+                delay: 0, // show suggestions immediately
+                position: {collision: 'flip'},
+                minLength: 2
+            }
+        });
+
+        if ($('.tagsSet').hasClass('errorLight')) {
+            $formId = $('.errorLight').closest('form').attr('id');
+            $('#' + $formId + ' .tag-editor').addClass('errorLight');
+        }
+
+        $().ajaxModalFormSubmitter({
+            clickObj: ".createSubscription",
+            modalWindowId: '#create_subscription_modal',
+            closeButtonName: closeButtonName,
+            spinnerLink: spinnerLink,
+            formId: "form#subscriptionForm",
+            resetForm: false,
+            width: 700,
+            height: 550,
+            useClickUrl: true,
+            editor: false,
+            messagesTimeOut: 5000,
+            reload: true,
+            onEditorLoadFunc: function (obj, data) {
+
+                if ($('.tag-editor').length > 0) {
+                    $('.tagsSet').tagEditor('destroy');
+                }
+
+                $('.tagsSet').tagEditor({
+                    placeholder: '<?php echo __('addTags') ?>',
+                    clickDelete: true,
+                    delimiter: tagsDelimiters,
+                    sortable: false,
+                    autocomplete: {
+                        source: function (request, response) {
+                            $.ajax({
+                                url: '<?php echo $this->domainLink(1, true) ?>' + 'default/search/get-tags',
+                                dataType: "json",
+                                data: {
+                                    tag: request.term
+                                },
+                                success: function (responseText) {
+                                    response(responseText.data);
+                                }
+                            });
+                        },
+                        delay: 0, // show suggestions immediately
+                        position: {collision: 'flip'},
+                        minLength: 2
+                    }
+                });
+
+                $('.tag-editor').attr('title', '<?php echo __('tagsSet') ?>');
+                $('.tag-editor').attr('data-tooltip', 'data-tooltip');
+                $('.tag-editor').addClass('has-tip tip-top');
+
+                $(document).foundation('tooltip', 'reflow');
+            }
+        });
+
+        $().ajaxModalFormSubmitter({
+            clickObj: ".edit",
+            modalWindowId: '#edit_subscription_modal',
+            closeButtonName: closeButtonName,
+            spinnerLink: spinnerLink,
+            formId: "form#subscriptionForm",
+            resetForm: false,
+            width: 700,
+            height: 550,
+            useClickUrl: true,
+            editor: true,
+            messagesTimeOut: 5000,
+            reload: true,
+            onEditorLoadFunc: function (obj, data) {
+
+                if ($('.tag-editor').length > 0) {
+                    $('.tagsSet').tagEditor('destroy');
+                }
+
+                $('.tagsSet').tagEditor({
+                    placeholder: '<?php echo __('addTags') ?>',
+                    clickDelete: true,
+                    delimiter: tagsDelimiters,
+                    sortable: false,
+                    autocomplete: {
+                        source: function (request, response) {
+                            $.ajax({
+                                url: '<?php echo $this->domainLink(1, true) ?>' + 'default/search/get-tags',
+                                dataType: "json",
+                                data: {
+                                    tag: request.term
+                                },
+                                success: function (responseText) {
+                                    response(responseText.data);
+                                }
+                            });
+                        },
+                        delay: 0, // show suggestions immediately
+                        position: {collision: 'flip'},
+                        minLength: 2
+                    }
+                });
+
+                $('.tag-editor').attr('title', '<?php echo __('tagsSet') ?>');
+                $('.tag-editor').attr('data-tooltip', 'data-tooltip');
+                $('.tag-editor').addClass('has-tip tip-top');
+
+                $(document).foundation('tooltip', 'reflow');
+            }
+        });
+
+        $().ajaxModalUrl({
+            clickClass: ".delete",
+            modalWindowId: "#dialog-delete",
+            height: 300,
+            width: 400,
+            useClickHref: true,
+            closeButtonName: closeButtonName,
+            spinnerLink: spinnerLink,
+            reload: true,
+            submitButtonSelector: '.delete-button-confirm'
+        });
+
+        $().ajaxModalUrl({
+            clickClass: ".duplicate",
+            modalWindowId: "#duplicate_subscription_modal",
+            height: 300,
+            width: 400,
+            useClickHref: true,
+            closeButtonName: closeButtonName,
+            spinnerLink: spinnerLink,
+            reload: true,
+            submitButtonSelector: '.duplicate_subscription_button'
+        });
+
+        var deactivateLink = '<?php echo $this->domainLink(1, true) . 'profile/subscription/deactivate/';?>';
+        $('.active-checkbox').click(function () {
+            var elId = $(this).parent().parent().prop('id').replace(/[^0-9]/g, '');
+
+            $().ajaxRequester({
+                url: deactivateLink + 'id/' + elId,
+                notice: true,
+                modal: true,
+                successCallback: function (options, answer) {
+
+                }
+            });
+        });
+    });
+</script>
+
+<?php
+
+echo $this->reveal(
+    '<div>' . $this->subscriptionForm . '</div>',
+    'edit_subscription_modal',
+    'large'
+);
+
+echo $this->reveal(
+    '<div>' . $this->subscriptionForm . '</div>',
+    'create_subscription_modal',
+    'large'
+);
+
+echo $this->reveal(
+    '<div class="small-10"><b>' . __('duplicate_subscription_message') . '</b></div>',
+    'duplicate_subscription_modal',
+    'small',
+    'duplicate_subscription_button'
+);
+
+echo $this->reveal(
+    '<div class="small-10"><b>' . __('delete_subscription_message') . '</b></div>',
+    'dialog-delete',
+    'small',
+    'delete-button-confirm'
+);
+
+?>

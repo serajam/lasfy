@@ -1,0 +1,90 @@
+<?php
+
+echo $this->reveal(
+    '<div class="small-10">' . __('delete_row_message') . '</div>',
+    'delete-row',
+    'large',
+    'delete-button-confirm'
+);
+echo $this->reveal(
+    '<div class="small-10">' . $this->service->getMenuForm() . '</div>',
+    'edit-row',
+    'large'
+);
+
+$form = $this->service->getMenuForm();
+?>
+
+<script type="text/javascript">
+    var closeButtonName = "<?php echo $this->translation('close')?>";
+    var spinnerLink = "<?php echo $this->domainLink(1) . 'images/ajax-loader.gif'; ?>";
+    $(document).ready(function () {
+
+        var config = {
+            '#pageId': {width: "100%", allow_single_deselect: true},
+            '#contentId': {width: "100%", allow_single_deselect: true, inherit_select_classes: true}
+        }
+        for (var selector in config) {
+            $(selector).chosen(config[selector]);
+        }
+
+        $().ajaxModalUrl({
+            clickClass: ".delete-row",
+            modalWindowId: "#delete-row",
+            height: 300,
+            width: 400,
+            useClickHref: true,
+            closeButtonName: closeButtonName,
+            spinnerLink: spinnerLink,
+            reload: true,
+            submitButtonSelector: '.delete-button-confirm'
+        });
+        $().ajaxModalFormSubmitter({
+            clickObj: ".edit-row",
+            modalWindowId: "#edit-row",
+            closeButtonName: closeButtonName,
+            spinnerLink: spinnerLink,
+            formId: "form#" + '<?php echo $form->getId()?>',
+            width: 700,
+            height: 550,
+            useClickUrl: true,
+            editor: true,
+            onEditorLoadFunc: function ($this, data) {
+                $('#contentId').trigger('chosen:updated');
+                $('#pageId').trigger('chosen:updated');
+                showField(data.type);
+            }
+        });
+        $().ajaxModalFormSubmitter({
+            clickObj: "#add_menu",
+            modalWindowId: "#edit-row",
+            closeButtonName: closeButtonName,
+            spinnerLink: spinnerLink,
+            formId: "form#" + '<?php echo $form->getId()?>',
+            width: 700,
+            height: 550,
+            useClickUrl: true
+        });
+
+        $('#type').change(function () {
+            var type = $('#type option:selected').prop('value');
+            showField(type);
+        });
+
+        function showField(type) {
+            $('#contentId, #link, #pageId').closest('li').hide();
+            if (type == 1 || type == 2) {
+                $('#contentId').closest('li').show();
+            }
+            else if (type == 3) {
+                $('#link').closest('li').show();
+            }
+            else if (type == 4 || type == 5) {
+                $('#contentId').closest('li').show();
+                $('#pageId').closest('li').show();
+            }
+
+        }
+    });
+</script>
+<Div class="hide"></Div>

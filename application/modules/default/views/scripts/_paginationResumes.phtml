@@ -1,0 +1,69 @@
+<?php
+$arrowLink = '<li class="%s"><a class="getPage" href="%s" title="%s">%s</a></li>';
+$params    = '?';
+$isParams  = false;
+if (!empty($this->pageType) && $this->pageType > 0) {
+    $params .= 'pageType=' . $this->pageType;
+    $isParams = true;
+}
+if (!empty($this->lang) && $this->lang > 0) {
+    $params .= '&lang=' . $this->lang;
+    $isParams = true;
+}
+if (!$isParams) {
+    $params = '';
+}
+?>
+<ul class="pagination">
+    <!-- First page link -->
+    <?php if (isset($this->previous)) { ?>
+        <li class="arrow"><a class="getPage" href="type/resume/page/<?php echo $this->first . $params; ?>">
+                <!--        <li class="arrow"><a class="getPage" href="-->
+                <?php //echo $this->url(array('page' => $this->first)) . $params;
+                ?><!--">-->
+                <?php echo __('first') ?>
+            </a></li>
+    <?php } else { ?>
+        <li class="arrow unavailable"><a href="#"><?php echo __('first') ?></a></li>
+    <?php } ?>
+    <!-- Numbered page links -->
+    <?php
+    if (isset($this->previous)) {
+        $class = 'arrow';
+        $href  = 'type/resume/page/' . $this->previous . $params;
+    } else {
+        $class = 'arrow unavailable';
+        $href  = '#';
+    }
+    echo sprintf($arrowLink, $class, $href, __('previous'), '&laquo;');
+    foreach ($this->pagesInRange as $page) {
+
+        if ($page != $this->current) {
+//            echo '<li><a class="getPage" href="' . $this->url(array('page' => $page)) . $params . '">' . $page . '</a></li>';
+            echo '<li><a class="getPage" href="type/resume/page/' . $page . $params . '">' . $page . '</a></li>';
+        } else {
+            echo '<li class="current"><a >' . $page . '</a></li>';
+        }
+    }
+    if (isset($this->next)) {
+        $class = 'arrow';
+        $href  = 'type/resume/page/' . $this->next . $params;
+        //$href = $this->url(array('page' => $this->next)) . $params;
+    } else {
+        $class = 'arrow unavailable';
+        $href  = '#';
+    }
+    echo sprintf($arrowLink, $class, $href, __('previous'), '&raquo;');
+    ?>
+    <!-- Last page link -->
+    <?php if (isset($this->next)) { ?>
+        <li class="arrow"><a class="getPage" href="type/resume/page/ <?php echo $this->last . $params; ?>">
+                <!--        <li class="arrow"><a class="getPage" href="-->
+                <?php //echo $this->url(array('page' => $this->last)) . $params;
+                ?><!--">-->
+                <?php echo __('last') ?>
+            </a></li>
+    <?php } else { ?>
+        <li class="arrow unavailable"><a href="#"><?php echo __('last') ?></a></li>
+    <?php } ?>
+</ul>

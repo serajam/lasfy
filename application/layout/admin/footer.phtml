@@ -1,0 +1,19 @@
+<footer class="row">
+    <div class="large-12 columns">
+        <hr/>
+        <div class="row">
+            <p class="text-center"><?php echo __('footer_copy') ?></p>
+        </div>
+    </div>
+</footer>
+<?php
+echo $this->headScript();
+echo $this->session();
+echo $this->scripts;
+echo $this->placeholder('scripts');
+?>
+</body>
+
+
+<?php echo $this->modalMessages() ?>
+</html>

@@ -1,0 +1,102 @@
+<?php
+$vacancyBlock = '<div class="vacanciesContainer">';
+if (empty($this->vacancies) || $this->vacancies->count() < 1) {
+} else {
+    $userId          = $this->userId;
+    $vacancyTemplate = '<div class="vacancyBlock">
+    <div class="vacancyHead clearfix" id="v_h_Id_%d">
+        <div class="vacancySeat">%s</div>
+        <div class="vacancyDate visible-for-medium-up">%s%s</div>
+        <div class="vacancyActions">
+            <ul class="button-group">%s</ul>
+        </div>
+    </div>
+    <div class="vacancyInformation hideElem clearfix" id="v%d"">
+        <div class="vacancyInnerInfo">
+            %s
+            <ul class="small-block-grid-1 medium-block-grid-3 large-block-grid-3">
+                <li><h3 class="fdU">%s</h3>
+                    <hr class="adHr">
+                    <p>%s</p></li>
+                <li><h3 class="fdU">%s</h3>
+                    <hr class="adHr">
+                    <p>%s</p></li>
+                <li><h3 class="fdU">%s</h3>
+                    <hr class="adHr">
+                    <p>%s</p></li>
+            </ul>
+            <h3 class="fdU">%s</h3>
+            <hr class="adHr">
+            %s
+        </div>
+        <div class="vacancyDateStatus right visible-for-small-down">
+            <p><span class="fdU">%s</span>: %s</p>
+        </div>
+    </div>
+</div>';
+
+    foreach ($this->vacancies as $v) {
+        $myAd = '';
+        if (!empty($userId) && $userId == $v->userId) {
+            $myAd = ' - <span class="cr">' . __('myVacancy') . '</span>';
+        }
+
+        $iconButtons = $this->iconButton('', 'plus pl10', __('open'), 'v_plus_Id_' . $v->vacancyId, 'fs20 plus');
+        $iconButtons .= $this->iconButton(
+            '',
+            'minus pl10',
+            __('close'),
+            'v_minus_Id_' . $v->vacancyId,
+            'fs20 minus hideElem'
+        );
+        $messageButton = '';
+        $tagsBlock     = '';
+        if (!$v->isTemporary && !empty($userId) && $userId != $v->userId) {
+            $messageButton = '<a href="' . $this->domainLink(1, true) . 'profile/index/messages/vid/' .
+                $v->vacancyId . '" class="button  tiny  adButton">' . __('contact_author') . '</a>';
+        }
+        if (!empty($v->tags) && is_object($v->tags)) {
+            $tags      = $v->tags->getItems();
+            $tagsBlock = '<ul class="tags">';
+            foreach ($tags as $t) {
+                $tagsBlock .= '<li class="post-tag"><span class="tag">' . $t->tagName . '</span></li>';
+            }
+            $tagsBlock .= '</ul>';
+        } else {
+            //unset($vacancyBlock);
+            continue;
+        }
+        $vacancyBlock .= sprintf(
+            $vacancyTemplate,
+            $v->vacancyId,
+            $v->seat,
+            date('Y-m-d', strtotime($v->createdAt)),
+            $myAd,
+            $iconButtons,
+            $v->vacancyId,
+            $messageButton,
+            __('requirements'),
+            $v->requirements,
+            __('vacancyDescription'),
+            $v->vacancyDescription,
+            __('offer'),
+            $v->offer,
+            __('tags'),
+            $tagsBlock,
+            '',
+            date('Y-m-d', strtotime($v->createdAt))
+        );
+    }
+
+    if ($this->vacancies->getPaginator()) {
+        $vacancyBlock .= $this->paginationControl(
+            $this->vacancies->getPaginator(),
+            'Sliding',
+            '_paginationVacancies.phtml'
+        );
+    }
+}
+$vacancyBlock .= '</div>';
+echo $vacancyBlock;
+
+

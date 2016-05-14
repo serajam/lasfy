@@ -1,0 +1,21 @@
+<?php
+/**
+ * @var $bc Zend_Navigation_Page_Mvc
+ */
+
+if (count($this->pages) == 0) {
+    $breadcrumb = '';
+} else {
+    $breadcrumb = '<ul class="breadcrumbs">';
+
+    foreach ($this->pages as $i => $bc) {
+        if ($bc->getAction()) {
+            $breadcrumb .= '<li class="current">' . $this->escape(__($bc->label)) . '</li>';
+        } else {
+            $breadcrumb .= '<li><a href="' . $bc->getHref() . '">' . $this->escape(__($bc->label)) . '</a></li>';
+        }
+    }
+
+    $breadcrumb .= '</ul>';
+}
+echo $breadcrumb;

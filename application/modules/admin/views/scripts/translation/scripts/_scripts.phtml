@@ -1,0 +1,62 @@
+<script type="text/javascript">
+    $(document).ready(function () {
+        var spinnerLink = "<?php echo $this->domainLink(1) . 'images/ajax-loader.gif'; ?>";
+        var closeButtonName = "<?php echo $this->translation('close')?>";
+
+        $('.show-translation').click(function () {
+            $('.translations .button-save').addClass('no-display');
+            $('.translations .data').html('<img src="<?php echo $this->domainLink(1) . 'images/ajax-loader.gif'; ?>">');
+            $('.ajax-forms').ajaxSubmit({
+                success: function (html, q, y, forma) {
+                    var ans_json = eval('(' + html + ')');
+
+                    $('.translations .data').html('');
+                    if (ans_json.data) {
+                        $('.translations .data').html(ans_json.data);
+                        $('.translations .button-save').removeClass('no-display');
+                    }
+                }
+            });
+        });
+
+        $('.save-translation').click(function () {
+            var buttonWrapper = $(this).parent().parent().parent();
+            $('.spinner-wrapper', buttonWrapper).html('<img class="spinner" src="' + spinnerLink + '" alt="" />');
+            var action = $('.ajax-formss').attr('action');
+            if (action.indexOf('system') < 0) {
+                $('.ajax-formss').attr('action', action);
+            }
+
+            $('.ajax-formss').ajaxSubmit({
+                success: function (responseText, q, y, forma) {
+                    var ans_json = responseText;
+                    if (ans_json.error == 'true') {
+                        errorMessage(ans_json.error_message);
+                    }
+                    if (ans_json.message) {
+                        successMessage(ans_json.message);
+                    }
+                    $('.translations .spinner').remove();
+                }
+            });
+        });
+
+        $().ajaxModalFormSubmitter({
+            clickObj: ".add-translation",
+            modalWindowId: "#dialog-add",
+            closeButtonName: closeButtonName,
+            spinnerLink: spinnerLink,
+            formId: "form#translation",
+            reload: false,
+            width: 350,
+            height: 500,
+            useClickUrl: true,
+            messagesTimeOut: 5000,
+            afterSubmitFunc: function (opt, ans) {
+                if (ans.error == 'false') {
+                    $('form#translation').clearForm();
+                }
+            }
+        });
+    });
+</script>

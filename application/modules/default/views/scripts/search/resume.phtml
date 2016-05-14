@@ -1,0 +1,12 @@
+<div class="content p30">
+    <?php
+    echo $this->partial(
+        'index/partials/_resumes.phtml',
+        [
+            'resumes' => $this->ad,
+            'userId'  => $this->userId
+        ]
+    );
+    $this->scripts .= $this->partial($this->controller . '/js/_js.phtml');
+    ?>
+</div>

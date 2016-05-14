@@ -1,0 +1,48 @@
+<?php
+
+$form        = $this->service->getFormLoader()->getForm('UserForm');
+$newUserForm = $this->service->getCreateUserForm();
+$formPasswd  = $this->service->getFormLoader()->getForm('NewPasswordForm');
+
+//$newUserForm->setAttrib('action', $this->domainLink() . 'index/edit-user/');
+$formPasswd->setAttrib('action', $this->domainLink() . 'index/edit-password/');
+
+echo $this->reveal(
+    $form,
+    'dialog-Users',
+    'small'
+);
+
+echo $this->reveal(
+    $newUserForm,
+    'dialog-add-user',
+    'small'
+);
+
+echo $this->reveal(
+    $formPasswd,
+    'dialog-password',
+    'small'
+);
+
+$from = $this->service->getRoleForm();
+
+echo $this->reveal(
+    $from,
+    'dialog-role',
+    'small'
+);
+
+echo $this->reveal(
+    __('changeUserState'),
+    'changeUserState',
+    'small',
+    'change-button'
+);
+
+echo $this->reveal(
+    __('delete_user'),
+    'delete',
+    'small',
+    'delete-button'
+);

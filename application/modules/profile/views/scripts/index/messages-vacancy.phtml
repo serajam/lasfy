@@ -1,0 +1,29 @@
+<div class="row">
+    <?php echo $this->notification($this->service); ?>
+    <div class="large-12 columns">
+        <div class="panel">
+            <h3>
+                <?php
+                echo __('vacancy'), ': ', $this->escape($this->vacancy->seat), '<br>';
+
+                if ($this->vacancy->getCompany()) {
+                    echo __('company'), ': ', $this->escape($this->vacancy->getCompany()->name);
+                }
+                ?>
+            </h3>
+        </div>
+    </div>
+</div>
+
+<?php
+echo $this->partial(
+    $this->controller . '/partials/messageFormBlock.phtml',
+    [
+        'service'      => $this->service,
+        'userMessages' => $this->userMessages,
+        'repliers'     => $this->repliers,
+        'type'         => 'vid',
+        'addId'        => $this->addId,
+        'add'          => $this->vacancy
+    ]
+);

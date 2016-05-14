@@ -1,0 +1,195 @@
+<script type="application/javascript">
+
+    $(document).on('focusin', function (e) {
+        if ($(e.target).closest(".mce-window").length) {
+            e.stopImmediatePropagation();
+        }
+    });
+
+    $(document).ready(function () {
+
+        var spinnerLink = "<?php echo $this->domainLink(1) . 'images/ajax-loader.gif'; ?>";
+        var container = '<?php echo $this->container ?>';
+        var closeButtonName = "<?php echo $this->translation('close')?>";
+        var language = "<?php echo Zend_Registry::get('language') ?>";
+
+        $('.plus').click(function () {
+            idArray = $(this).attr('id').split('_');
+            id = idArray[3];
+            prefix = idArray[0];
+            $('#' + prefix + id).show('fast');
+            $(this).removeClass('showElem');
+            $(this).addClass('hideElem');
+            $('#' + prefix + '_minus_Id_' + id).removeClass('hideElem');
+            $('#' + prefix + '_minus_Id_' + id).addClass('showElem');
+            return false;
+        });
+
+        $('.minus').click(function () {
+            idArray = $(this).attr('id').split('_');
+            id = idArray[3];
+            prefix = idArray[0];
+            $('#' + prefix + id).hide('fast');
+            $(this).removeClass('showElem');
+            $(this).addClass('hideElem');
+            $('#' + prefix + '_plus_Id_' + id).removeClass('hideElem');
+            $('#' + prefix + '_plus_Id_' + id).addClass('showElem');
+            return false;
+        });
+
+        $('.mail').click(function (event) {
+            event.preventDefault();
+            location.href = $(this).attr('href');
+            return false;
+        });
+
+        $('.banned').click(function (event) {
+            event.preventDefault();
+            return false;
+        });
+
+        $().ajaxModalUrl({
+            clickClass: ".delete",
+            modalWindowId: "#dialog-delete",
+            height: 300,
+            width: 400,
+            useClickHref: true,
+            closeButtonName: closeButtonName,
+            spinnerLink: spinnerLink,
+            reload: true,
+            submitButtonSelector: '.delete-button-confirm'
+        });
+
+        $().ajaxModalUrl({
+            clickClass: ".publish",
+            modalWindowId: "#dialog-publish",
+            height: 300,
+            width: 400,
+            useClickHref: true,
+            closeButtonName: closeButtonName,
+            spinnerLink: spinnerLink,
+            reload: true,
+            submitButtonSelector: '.publish-button-confirm'
+        });
+
+        $().ajaxModalUrl({
+            clickClass: ".unpublish",
+            modalWindowId: "#dialog-unpublish",
+            height: 300,
+            width: 400,
+            useClickHref: true,
+            closeButtonName: closeButtonName,
+            spinnerLink: spinnerLink,
+            reload: true,
+            submitButtonSelector: '.unpublishButtonConfirm'
+        });
+
+        $().ajaxModalFormSubmitter({
+            clickObj: ".edit-vacancy",
+            modalWindowId: '#dialog-edit-vacancy',
+            closeButtonName: closeButtonName,
+            spinnerLink: spinnerLink,
+            formId: "form#vacancyForm",
+            width: 700,
+            height: 550,
+            useClickUrl: true,
+            editor: true,
+            isHTMLEditor: false,
+            editorElementId: ['vacancyDescription', 'requirements', 'offer', 'tags'],
+            editorLanguage: language,
+            messagesTimeOut: 5000,
+            reload: true,
+            onEditorLoadFunc: function (obj, data) {
+
+                if ($('.tag-editor').length > 0) {
+                    $('.tagsSet').tagEditor('destroy');
+                }
+
+                $('.tagsSet').tagEditor({
+                    placeholder: '<?php echo __('addTags') ?>',
+                    clickDelete: true,
+                    delimiter: tagsDelimiters,
+                    sortable: false,
+                    autocomplete: {
+                        source: function (request, response) {
+                            $.ajax({
+                                url: '<?php echo $this->domainLink(1, true) ?>' + 'default/search/get-tags',
+                                dataType: "json",
+                                data: {
+                                    tag: request.term
+                                },
+                                success: function (responseText) {
+                                    response(responseText.data);
+                                }
+                            });
+                        },
+                        delay: 0, // show suggestions immediately
+                        position: {collision: 'flip'},
+                        minLength: 2
+                    }
+                });
+
+                $('.tag-editor').attr('title', '<?php echo __('tagsSet') ?>');
+                $('.tag-editor').attr('data-tooltip', 'data-tooltip');
+                $('.tag-editor').addClass('has-tip tip-top');
+
+                $(document).foundation('tooltip', 'reflow');
+            }
+        });
+
+        $().ajaxModalFormSubmitter({
+            clickObj: ".edit-resume",
+            modalWindowId: '#dialog-edit-resume',
+            closeButtonName: closeButtonName,
+            spinnerLink: spinnerLink,
+            formId: "form#resumeForm",
+            width: 700,
+            height: 550,
+            useClickUrl: true,
+            editor: true,
+            isHTMLEditor: false,
+            editorElementId: ['experience', 'expectations', 'goals', 'tags'],
+            editorLanguage: language,
+            messagesTimeOut: 5000,
+            reload: true,
+            onEditorLoadFunc: function (obj, data) {
+
+                if ($('.tag-editor').length > 0) {
+                    $('.tagsSet').tagEditor('destroy');
+                }
+
+                $('.tagsSet').tagEditor({
+                    placeholder: '<?php echo __('addTags') ?>',
+                    clickDelete: true,
+                    delimiter: tagsDelimiters,
+                    sortable: false,
+                    autocomplete: {
+                        source: function (request, response) {
+                            $.ajax({
+                                url: '<?php echo $this->domainLink(1, true) ?>' + 'default/search/get-tags',
+                                dataType: "json",
+                                data: {
+                                    tag: request.term
+                                },
+                                success: function (responseText) {
+                                    response(responseText.data);
+                                }
+                            });
+                        },
+                        delay: 0, // show suggestions immediately
+                        position: {collision: 'flip'},
+                        minLength: 2
+                    }
+                });
+
+                $('.tag-editor').attr('title', '<?php echo __('tagsSet') ?>');
+                $('.tag-editor').attr('data-tooltip', 'data-tooltip');
+                $('.tag-editor').addClass('has-tip tip-top');
+
+                $(document).foundation('tooltip', 'reflow');
+
+            }
+        });
+    });
+
+</script>

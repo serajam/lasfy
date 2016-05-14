@@ -1,0 +1,79 @@
+<?php
+/**
+ * @var $service GalleryService
+ */
+
+?>
+    <div class="row">
+        <?php
+        $service    = $this->service;
+        $host       = $this->domainLink();
+        $uploadLink = $host . $this->controller . '/upload/';
+        $deleteLink = $host . $this->controller . '/delete/';
+        echo $this->pageTitle();
+        echo $this->notification($this->service);
+
+        echo $this->buttonLink(
+            $uploadLink,
+            $this->translation('upload_image'),
+            'id="upload-' . $this->container . '"',
+            'small'
+        );
+
+        echo $service->getFormLoader()->getForm('ImageSearchForm');
+
+        $imageCollection = $this->imagesContainers;
+        echo '<hr><div class="row"><div class="columns photos">';
+        if ($imageCollection && $imageCollection->count()) {
+            echo '<ul class="large-block-grid-6">';
+            foreach ($imageCollection as $container) {
+                echo '<li>';
+                $buttons = $this->iconButton(
+                    $host . 'gallery/delete-upload/image/' . $container->imageId,
+                    'x',
+                    __('remove'),
+                    '',
+                    'remove-image'
+                );
+                foreach ($container->images as $key => $image) {
+                    $link = $this->domainLink(1) . 'uploads/' . $image->imageName;
+                    if (!$key) {
+                        $nextImg  = $container->images->next();
+                        $linkNext = $this->domainLink(1) . 'uploads/' . $nextImg->imageName;
+                        echo
+                            '<a data-tooltip title="' . $image->imageTitle
+                            . '" rel="lightbox[all] class="has-tip th radius" href="'
+                            . $linkNext . '"><img width="150"  src="' . $link . '">
+                    </a><div class="panel">' . $this->iconsList([$buttons]) . $nextImg->compression
+                            . 'px <a target=_blank  href="' . $linkNext . '">'
+                            . __('image_link') . '</a>';
+                    } else {
+                        echo ' <br><a rel="lightbox[' . $image->compression
+                            . '] class="th radius" href="' . $link . '">'
+                            . $image->compression . 'px</a> <a target=_blank  href="' . $link . '">' . __('image_link')
+                            . '</a>';
+                    }
+                }
+                echo '<p>' . $container->imageDesc . '</p></div></li>';
+            }
+            echo '</ul>';
+        }
+        echo '</div></div>';
+        ?>
+    </div>
+
+<?php
+echo $this->partial(
+    $this->controller . '/partials/_windows.phtml',
+    [
+        'container' => $this->container,
+        'service'   => $this->service
+    ]
+);
+$this->scripts = $this->partial(
+    $this->controller . '/partials/_ajaxHelpers.phtml',
+    [
+        'container' => $this->container,
+        'service'   => $this->service
+    ]
+);

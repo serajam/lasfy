@@ -1,0 +1,400 @@
+body {
+    font-size: 12px;
+}
+
+.float-left {
+    float: left;
+}
+
+pre {
+    font-size: 12px;
+    font-family: Tahoma;
+    word-wrap: break-word;
+}
+
+.dialog_link {
+    padding: 6px;
+    text-decoration: none;
+    position: relative;
+}
+
+.dialog_link span.ui-icon {
+    margin: 0 5px 0 0;
+    position: absolute;
+    left: .2em;
+    top: 50%;
+    margin-top: -8px;
+}
+
+ul#icons {
+    margin: 0;
+    padding: 0;
+}
+
+ul#icons li {
+    margin: 2px;
+    position: relative;
+    padding: 4px 0;
+    cursor: pointer;
+    float: left;
+    list-style: none;
+}
+
+ul#icons span.ui-icon {
+    float: left;
+    margin: 0 4px;
+}
+
+.no-display {
+    display: none;
+}
+
+.float-left {
+    float: left;
+}
+
+.modal-dialogue, #statuses-list {
+    display: none;
+}
+
+.dialog_link {
+    font-size: 12px !important;
+}
+
+#ui-datepicker-div {
+    display: none;
+}
+
+.ui-icon-red {
+    background-image: url(images/ui-icons_cd0a0a_256x240.png);
+    display: block;
+    text-indent: -99999px;
+    overflow: hidden;
+    background-repeat: no-repeat;
+    height: 16px;
+    width: 16px;
+}
+
+.error {
+    color: #FF0000;
+    padding: 10px;
+    margin: 10px;
+}
+
+ul.errors {
+    margin: -13px 0 5px 0 !important;
+}
+
+.ajax-errors {
+    padding-left: 0;
+    margin-left: 0;
+    margin-bottom: 10px;
+}
+
+.errors, .ajax-errors {
+    color: #FF0000;
+    font-size: 13px;
+    font-weight: bold;
+}
+
+.error, .errors {
+    color: #FF0000;
+    padding: 0 0 5px 0;
+    margin: 0 0 0px 0;
+    font-weight: bold;
+
+}
+
+.errors p, .ajax-errors p {
+    margin: 5px 3px 3px 3px;
+    width: 60%;
+}
+
+.ajax-errors li {
+    margin: 0 !important;
+}
+
+.error-wrapper, .message-wrapper {
+    margin: 10px;
+    font-weight: bold;
+}
+
+.message, .message p {
+    position: relative;
+    margin: 10px 0 10px 0;
+}
+
+span.error {
+    font-weight: bold;
+    font-size: 14px;
+}
+
+.clear {
+    clear: both;
+}
+
+.dialog_link {
+    margin: 10px 0 10px 0;
+}
+
+ul.errors li {
+    list-style-type: disc;
+    list-style-position: inside;
+}
+
+ul.errors {
+    margin-left: 15px;
+}
+
+#t7_s {
+    float: left;
+    padding: 0px 0px 0px 0px;
+}
+
+#t7_m {
+    float: left;
+    padding: 0px 0px 0px 3px;
+}
+
+.session-info {
+    height: 43px;
+    float: right;
+    padding: 5px;
+    color: #fbf8ee;
+    font-family: Tahoma;
+    font-size: 12px !important;
+}
+
+.session-info div.block, .session-info div.hasCountdown {
+    margin-left: 5px;
+    float: left;
+}
+
+.session-info div.renew {
+    margin-left: 5px;
+}
+
+.session-info #session_timer {
+    margin-right: 5px;
+}
+
+.session-info div.renew a {
+    color: #fbf8ee;
+}
+
+.session-info div.renew a:hover {
+    text-decoration: none;
+}
+
+.upload-documents ul {
+    margin: 15px 0 15px 0;
+    border-bottom: 1px solid #ececec;
+}
+
+.user a {
+    text-decoration: underline;
+    font-size: 12px !important;
+    color: #fbf8ee;
+}
+
+.user {
+    height: 43px;
+    font-size: 12px !important;
+    font-weight: bold;
+    float: right;
+    margin: 5px 25px 0px 0px;
+    color: #fbf8ee;
+}
+
+.user div.user-info div, .user div.actions div {
+    display: inline;
+    margin-left: 3px;
+}
+
+/*/// BOX-CONTENT /////*/
+
+.box {
+    margin: 0px auto;
+    padding: 10px;
+    background-color: #f9f9f9;
+    color: #666666;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+}
+
+.box h2 {
+}
+
+.box .divider {
+    margin: 0 0 5px 0;
+    border: 0;
+    border-top: 1px dotted #D9D9D9;
+}
+
+.box .box-content form ul {
+    padding-left: 0;
+    margin-left: 0;
+}
+
+.ui-datepicker-trigger {
+    margin: 0px 0px 0px 5px;
+    cursor: pointer;
+}
+
+.scroll {
+
+    /*   overflow:auto;*/
+    margin: 0;
+    padding: 5px;
+    border: 0;
+    scrollbar-face-color: #6095C1;
+    scrollbar-highlight-color: #C2D7E7;
+    scrollbar-3dlight-color: #85AECF;
+    scrollbar-darkshadow-color: #427AA8;
+    scrollbar-shadow-color: #315B7D;
+    scrollbar-arrow-color: #FFFFFF;
+    scrollbar-track-color: #4DECF8S;
+    text-align: justify;
+    /* background-color: #E1F2FB;*/
+    margin: 10px 0 10px 0;
+}
+
+.hidden {
+    display: none;
+}
+
+.paginationControl {
+    margin: 1px 0px 0px 7px;
+}
+
+.pagination {
+    margin: 1px 0px 0px 7px;
+    font-size: 12px;
+}
+
+.pagination a {
+    padding: 3px;
+}
+
+.pagination .current {
+    font-weight: bold;
+    color: #000000;
+}
+
+ul li {
+    list-style-type: none;
+}
+
+ul {
+    margin-left: 0 !important;
+    padding-left: 0;
+}
+
+.submit {
+    margin-top: 15px;
+    overflow: hidden;
+}
+
+.jqui .ui-widget-content a {
+    color: #fff;
+}
+
+@font-face {
+    font-family: '[set]Foundicons';
+    src: url('fonts/[set]_foundicons.eot');
+    src: url('fonts/[set]_foundicons.eot?#iefix') format('embedded-opentype'), url('fonts/[set]_foundicons.woff') format('woff'), url('fonts/[set]_foundicons.ttf') format('truetype'), url('fonts/[set]_foundicons.svg#[set]Foundicons') format('svg');
+    font-weight: normal;
+    font-style: normal;
+}
+
+[class*="foundicon-"] {
+    display: inline;
+    width: auto;
+    height: auto;
+    line-height: inherit;
+    vertical-align: baseline;
+    background-image: none;
+    background-position: 0 0;
+    background-repeat: repeat;
+}
+
+[class*="foundicon-"]:before {
+    font-family: "[set]Foundicons";
+    font-weight: normal;
+    font-style: normal;
+    text-decoration: inherit;
+}
+
+.button-group {
+    font-size: 20px;
+}
+
+.button-group li {
+    padding-right: 3px;
+    margin-right: 3px !important;
+}
+
+.button-group .icon-text {
+    font-size: 10px;
+}
+
+.chosen-choices {
+    padding: 9px !important;
+}
+
+.search-choice {
+    padding: 8px 20px 8px 10px !important;
+}
+
+a.search-choice-close {
+    top: 9px !important;
+}
+
+.search-field input {
+    font-size: 12px !important;
+}
+
+.chosen-container {
+    margin-bottom: 15px !important;
+}
+
+.chosen-single {
+    height: 28px !important;
+    font-size: 14px !important;
+}
+
+.mce-tinymce {
+    margin-bottom: 10px !important;
+}
+
+.size-45 {
+    font-size: 45px;
+}
+
+/** SOME FIXES FOR FOUNADTIN 5.2 **/
+.reveal-modal-bg {
+    z-index: 98 !important;
+}
+
+textarea[rows] {
+    height: 0 !important;
+}
+
+.mb10 {
+    margin-top: 10px !important;
+}
+
+.noBorder {
+    border: 0 !important;
+}
+
+div.tag-panel {
+    border-style: solid;
+    border-width: 1px;
+    border-color: #d8d8d8;
+    margin: 2px;
+    padding: 2px;
+    text-align: center;
+    background: #f2f2f2;
+    color: #333;
+}

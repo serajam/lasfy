@@ -1,0 +1,47 @@
+<script type="application/javascript">
+    $(document).ready(function () {
+        var spinnerLink = "<?php echo $this->domainLink(1) . 'images/ajax-loader.gif'; ?>";
+
+        language = "<?php echo Zend_Registry::get('language') ?>";
+        addTinyMCE('description', language);
+
+        /*$().ajaxFormSubmitter({
+         messageWindow: "form#password_change",
+         spinnerLink: spinnerLink,
+         useClickUrl: false,
+         formId: "form#password_change",
+         reload: false
+         });*/
+
+        var closeButtonName = "<?php echo $this->translation('close')?>";
+
+        $('.tagsSet').tagEditor({
+            placeholder: '<?php echo __('addTags') ?>',
+            clickDelete: true,
+            delimiter: tagsDelimiters,
+            sortable: false,
+            autocomplete: {
+                source: function (request, response) {
+                    $.ajax({
+                        url: '<?php echo $this->domainLink(1, true) ?>' + 'default/search/get-tags',
+                        dataType: "json",
+                        data: {
+                            tag: request.term
+                        },
+                        success: function (responseText) {
+                            response(responseText.data);
+                        }
+                    });
+                },
+                delay: 0, // show suggestions immediately
+                position: {collision: 'flip'},
+                minLength: 2
+            }
+        });
+
+        if ($('.tagsSet').hasClass('errorLight')) {
+            $formId = $('.errorLight').closest('form').attr('id');
+            $('#' + $formId + ' .tag-editor').addClass('errorLight');
+        }
+    });
+</script>

@@ -1,0 +1,36 @@
+<div class="row">
+    <div class="large-12 columns">
+        <?php
+        $template
+            = '
+  <div class="row">
+    <div class="large-2 columns small-3"><img width="150" src="%s"></div>
+    <div class="large-10 columns">
+      <h3>%s</h3>
+      %s
+      <p>%s</p>
+    </div>
+  </div>';
+        if ($this->company) {
+            $mime = "image/jpeg";
+            if ($this->company->logo) {
+                $image = "data:" . $mime . ";base64," . base64_encode($this->company->logo);
+            } else {
+                $image = '/images/no-logo.png';
+            }
+
+            $link = '';
+            if ($this->company->webSite) {
+                $link = sprintf('<a href="%s" rel="nofollow">%s</a>', $this->company->webSite, $this->company->webSite);
+            }
+            echo sprintf(
+                $template,
+                $image, $this->escape($this->company->name),
+                $link,
+                $this->company->description
+            );
+        }
+
+        ?>
+    </div>
+</div>

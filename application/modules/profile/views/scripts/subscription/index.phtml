@@ -1,0 +1,95 @@
+<?php
+$editLink   = $this->domainLink(1, true) . 'profile/subscription/edit/';
+$deleteLink = $this->domainLink(1, true) . 'profile/subscription/un-subscribe/';
+//$deactivateLink = $this->domainLink(1, true) . 'profile/subscription/deactivate/';
+$duplicateLink = $this->domainLink(1, true) . 'profile/subscription/duplicate/';
+
+Core_View_Helper_Html_EditorList::$class = 'subscription';
+?>
+
+    <div class="row">
+        <div class="large-12">
+            <?php
+            echo $this->notification($this->service);
+            echo $this->buttonLink('#', __('create_subscription'), '', 'small createSubscription');
+            ?>
+        </div>
+    </div>
+    <hr>
+    <div class="row">
+        <div class="large-12">
+            <?php
+
+            $actions = [
+                'edit'      => [
+                    'link'       => $editLink,
+                    'icon_class' => 'pencil',
+                ],
+                'duplicate' => [
+                    'link'       => $duplicateLink,
+                    'icon_class' => 'page-copy',
+                ],
+                'delete'    => [
+                    'link'       => $deleteLink,
+                    'icon_class' => 'trash',
+                ]
+            ];
+            $fields  = [
+                'subscriptionActive' => [
+                    'closure_function' => function (Subscription $item) {
+                        $checked  = $item->isActive() ? 'checked' : '';
+                        $checkBox = '<input class="active-checkbox" type="checkbox" value="" ' . $checked . '>';
+
+                        return $checkBox;
+                    }
+                ],
+                'onlyNewAdds'        => [
+                    'closure_function' => function (Subscription $item) {
+                        $checked = $item->getOnlyNew() ? __('yes') : __('no');
+
+                        //$checkBox = '<input type="checkbox" value="" ' . $checked . '>';
+
+                        return $checked;
+                    }
+                ],
+                'forPeriod'          => [
+                    'closure_function' => function (Subscription $item) {
+                        $types   = Zend_Registry::get('types');
+                        $periods = $types['subscriptionPeriods'];
+                        $period  = $item->getPeriod();
+
+                        return __($periods[$period]);
+                    }
+                ],
+                'addsType'           => [
+                    'closure_function' => function (Subscription $item) {
+                        $types    = Zend_Registry::get('types');
+                        $addsType = $types['addType'];
+                        $type     = $item->getType();
+
+                        return __($addsType[$type]);
+                    }
+                ],
+                'tags'               => [
+                    'closure_function' => function (Subscription $item) {
+                        $tags = json_decode($item->getTags(), true);
+
+                        return implode(', ', $tags);
+                    }
+                ],
+            ];
+
+            echo $this->editorList($this->collection, $actions, $fields);
+            ?>
+        </div>
+    </div>
+
+<?php
+$this->scripts .= $this->partial(
+    $this->controller . '/scripts/_subscription.phtml',
+    [
+        'service'          => $this->service,
+        'container'        => $this->container,
+        'subscriptionForm' => $this->subscriptionForm
+    ]
+);

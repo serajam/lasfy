@@ -1,0 +1,38 @@
+<div class="row">
+    <?php
+    $baseLink = $this->domainLink(1, true);
+    $menuTree = '<ul><li><a href="' . $baseLink . '">' . __('home') . '</a></li>';
+    foreach ($this->menuItems as $item) {
+        $menuTree .= '<li><a href="' . $baseLink . $item['page']['routeCode'] . '">' . __($item['page']['name']) . '</a>';
+        if (array_key_exists('subPage', $item)) {
+            $menuTree .= '<ul>';
+            foreach ($item['subPage'] as $subMenu) {
+                $menuTree .= '<li><a href="' . $baseLink . $subMenu['page']['routeCode'] . '">' . __($subMenu['page']['name']) . '</a></li>';
+            }
+            $menuTree .= '</ul>';
+        }
+        $menuTree .= '</li>';
+    }
+    $menuTree .= '<li><a href="' . $baseLink . 'about.html">' . __('about') . '</a></li>
+  <li><a href="' . $baseLink . 'contacts">' . __('contacts') . '</a></li>
+  <li><a href="' . $baseLink . 'companies">' . __('companies') . '</a></li>
+  <li><a href="' . $baseLink . 'agreement.html">' . __('agreement') . '</a></li>
+  <li><a href="' . $baseLink . 'news">' . __('news') . '</a></li>
+  <li><a href="' . $baseLink . 'blog">' . __('blog') . '</a>';
+    if ($this->blogPages) {
+        $menuTree .= '<ul>';
+        foreach ($this->blogPages as $subMenu) {
+            $menuTree .= '<li><a href="' . $baseLink . $subMenu->slug . '.html">' . __($subMenu->title) . '</a></li>';
+        }
+        $menuTree .= '</ul>';
+    }
+
+    $menuTree .= '<li><a href="' . $baseLink . 'help.html">' . __('help') . '</a></li>
+  <li><a href="' . $baseLink . 'cities">' . __('cities') . '</a></li>
+  <li><a href="' . $baseLink . 'jobs">' . __('jobs') . '</a></li>
+  <li><a href="' . $baseLink . 'sitemap">' . __('sitemap') . '</a></li>';
+    $menuTree .= '</ul>';
+
+    echo $menuTree;
+    ?>
+</div>

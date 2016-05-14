@@ -1,0 +1,60 @@
+<?php
+
+if (!$this->companies || empty($this->companies) || $this->companies->count() == 0) {
+    echo $this->searchForm;
+    echo '<div class="row"><div class="large-12 columns"><h2>' . __('no_companies') . '</h2></div></div>';
+
+    return false;
+}
+
+$host     = $this->domainLink(1, true);
+$template = '<div class="row">
+    <div class="large-2 columns small-3"><a id="company%d" href="' . $host . 'default/company/view/id/%d">
+    <img width="150" src="%s"></a></div>
+    <div class="large-10 columns"><h3><a id="company%d" href="' . $host . 'default/company/view/id/%d">%s</a></h3>%s
+      <p>%s</p></div></div><hr>';
+
+$companies = '';
+/** @var Company $company */
+foreach ($this->companies as $company) {
+    $mime = "image/jpeg";
+    if ($company->logo) {
+        $image = "data:" . $mime . ";base64," . base64_encode($company->logo);
+    } else {
+        $image = '/images/no-logo.png';
+    }
+
+    $link = '';
+    if ($company->webSite) {
+        $link = sprintf('<a href="%s" rel="nofollow">%s</a>', $company->webSite, $company->webSite);
+    }
+    $companies .= sprintf(
+        $template,
+        $company->companyId,
+        $company->companyId,
+        $image,
+        $company->companyId,
+        $company->companyId,
+        $this->escape($company->name),
+        $link,
+        $this->escape($company->shortDescription)
+    );
+}
+?>
+
+<div class="row">
+    <?php echo $this->searchForm; ?>
+
+    <div class="large-12 columns">
+        <?php
+        echo $companies;
+        echo $this->paginationControl(
+            $this->companies->getPaginator(),
+            'Sliding',
+            '_paginationCompanies.phtml'
+        );
+
+        ?>
+    </div>
+</div>
+

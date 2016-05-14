@@ -1,0 +1,147 @@
+<?php
+$resumeBlock = '<div class="resumesContainer">';
+$host        = $this->domainLink(null, true);
+if (empty($this->resumes)) {
+    echo __('noResumes');
+} else {
+    $messages = MessagesAccess::getAddNewMessages($this->resumes->getIds(), MessagesAccess::RESUME_TYPE);
+    foreach ($this->resumes as $r) {
+        $editLink      = $host . 'management/edit/ad/resume/id/' . $r->resumeId;
+        $deleteLink    = $host . 'management/delete/ad/resume/id/' . $r->resumeId;
+        $publishLink   = $host . 'management/publish/ad/resume/id/' . $r->resumeId;
+        $unpublishLink = $host . 'management/unpublish/ad/resume/id/' . $r->resumeId;
+        $messagesLink  = $this->domainLink(1, true) . 'profile/index/messages/rid/' . $r->resumeId;
+
+        $resumeTemplate = '<div class="vacancyBlock">
+    <div class="vacancyHead clearfix" id="r_h_Id_%d">
+        <div class="vacancySeat">%s</div>
+        <div class="vacancyDate visible-for-medium-up">%s</div>
+        <div class="vacancyActions">
+            <ul class="button-group">%s</ul>
+        </div>
+    </div>
+    <div class="vacancyInformation hideElem clearfix" id="r%d"">
+        <div class="vacancyInnerInfo">
+            <ul class="small-block-grid-1 medium-block-grid-3 large-block-grid-3">
+                <li><h3 class="fdU">%s</h3>
+                    <hr class="adHr">
+                    <p>%s</p></li>
+                <li><h3 class="fdU">%s</h3>
+                    <hr class="adHr">
+                    <p>%s</p></li>
+                <li><h3 class="fdU">%s</h3>
+                    <hr class="adHr">
+                    <p>%s</p></li>
+            </ul>
+            <h3 class="fdU">%s</h3>
+            <hr class="adHr">
+            %s
+        </div>
+        <div class="vacancyDateStatus right">
+            <p class="visible-for-small-down"><span class="fdU">%s</span>: %s</p>
+            <p><span class="fdU">%s</span>: %s</p>
+        </div>
+    </div>
+</div>';
+
+        $iconButtons = $this->iconButton('', 'plus pl10', __('open'), 'r_plus_Id_' . $r->resumeId, 'fs20 plus');
+        $iconButtons .= $this->iconButton(
+            '',
+            'minus pl10',
+            __('close'),
+            'r_minus_Id_' . $r->resumeId,
+            'fs20 minus hideElem'
+        );
+        $iconButtons .= $this->iconButton(
+            $editLink,
+            'pencil pl10',
+            __('editResume'),
+            'r_edit_Id_' . $r->resumeId,
+            'fs20 edit-resume'
+        );
+        if ((int)$r->isPublished) {
+            $iconButtons .= $this->iconButton(
+                $unpublishLink,
+                'lightbulb pl10',
+                __('published'),
+                'r_publish_Id_' . $r->resumeId,
+                'fs20 unpublish'
+            );
+        } else {
+            $iconButtons .= $this->iconButton(
+                $publishLink,
+                'prohibited pl10',
+                __('unpublished'),
+                'r_unpublish_Id_' . $r->resumeId,
+                'fs20 publish'
+            );
+        }
+        if ((int)$r->isBanned) {
+            $iconButtons .= $this->iconButton(
+                '',
+                'dislike pl10',
+                __('notApproved'),
+                'r_banned_Id_' . $r->resumeId,
+                'banned fs20'
+            );
+        } else {
+            $iconButtons .= $this->iconButton(
+                '',
+                'like pl10',
+                __('approved'),
+                'r_unbanned_Id_' . $r->resumeId,
+                'banned fs20'
+            );
+        }
+        $iconButtons .= $this->iconButton(
+            $deleteLink,
+            'page-delete pl10',
+            __('deleteAd'),
+            'r_delete_Id_' . $r->resumeId,
+            'fs20 delete'
+        );
+
+        $count = isset($messages[$r->resumeId]) ? $messages[$r->resumeId] : 0;
+        $iconButtons .= $this->iconButton(
+            $messagesLink,
+            'mail pl10',
+            __('messages') . '(' . $count . ')',
+            'messages_' . $r->resumeId,
+            'mail fs20',
+            '',
+            '<span class="fs14 messagesCount">(' . $count . ')</span>'
+        );
+        if (!empty($r->tags)) {
+            $tags      = $r->tags->getItems();
+            $tagsBlock = '<ul class="pl10 tags">';
+            foreach ($tags as $t) {
+                $tagsBlock .= '<li class="post-tag"><span class="tag">' . $t->tagName . '</span></li>';
+            }
+            $tagsBlock .= '</ul>';
+        }
+
+        $resumeBlock .= sprintf(
+            $resumeTemplate,
+            $r->resumeId,
+            $r->seat,
+            '(' . __('createdAt') . ': ' . date('Y-m-d', strtotime($r->createdAt)) . ')',
+            $iconButtons,
+            $r->resumeId,
+            __('experience'),
+            $r->experience,
+            __('expectations'),
+            $r->expectations,
+            __('goals'),
+            $r->goals,
+            __('tags'),
+            $tagsBlock,
+            __('createdAt'),
+            date('Y-m-d', strtotime($r->createdAt)),
+            __('published'),
+            $this->type($r->isPublished, 'boolean')
+        );
+    }
+    $resumeBlock .= '</div>';
+    echo $resumeBlock;
+}
+

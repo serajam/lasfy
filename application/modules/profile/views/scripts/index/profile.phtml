@@ -1,0 +1,59 @@
+<?php $this->headScript()->appendFile('/js/tinymce/tinymce.min.js'); ?>
+    <div class="row">
+        <?php echo $this->notification($this->service); ?>
+        <ul class="tabs show-for-medium-up" data-tab="'" id="profileTabs">
+            <li class="tab-title threeTabs active"><a href="#panel2-1">
+                    <h3 class="subheader no-margin"><?php echo __('aboutMe') ?></h3></a></li>
+            <li class="tab-title threeTabs"><a href="#panel2-2">
+                    <h3 class="subheader no-margin"><?php echo __('aboutCompany') ?></h3></a></li>
+            <li class="tab-title threeTabs"><a href="#panel2-3">
+                    <h3 class="subheader no-margin"><?php echo __('profile_settings') ?></h3></a></li>
+        </ul>
+        <div class="tabs-content show-for-medium-up">
+            <div class="content active p30" id="panel2-1">
+                <?php echo $this->userForm; ?>
+            </div>
+            <div class="content p30" id="panel2-2">
+                <?php echo $this->companyForm; ?>
+            </div>
+            <div class="content p30" id="panel2-3">
+                <div class="small-6">
+                    <?php echo $this->passwordForm; ?>
+                </div>
+            </div>
+        </div>
+
+        <ul class="accordion show-for-small-only" data-accordion>
+            <li class="accordion-navigation">
+                <a href="#panel2-1"><?php echo __('aboutMe') ?></a>
+
+                <div id="panel2-1" class="content">
+                    <?php echo $this->userForm; ?>
+                </div>
+            </li>
+            <li class="accordion-navigation">
+                <a href="#panel2-2"><?php echo __('aboutCompany') ?></a>
+
+                <div id="panel2-2" class="content">
+                    <?php echo $this->companyForm; ?>
+                </div>
+            </li>
+            <li class="accordion-navigation">
+                <a href="#panel2-3"><?php echo __('profile settings') ?></a>
+
+                <div id="panel2-3" class="content">
+                    <?php echo $this->passwordForm; ?>
+                </div>
+            </li>
+        </ul>
+
+    </div>
+
+<?php
+$this->scripts .= $this->partial(
+    $this->controller . '/scripts/_js.phtml',
+    [
+        'service'   => $this->service,
+        'container' => $this->container
+    ]
+);

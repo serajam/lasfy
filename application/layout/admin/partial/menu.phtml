@@ -1,0 +1,43 @@
+<ul class="left">
+    <li class="divider"></li>
+    <?php
+    $this->navigation()->findByResource(
+        Zend_Controller_Front::getInstance()->getRequest()->module .
+        Zend_Controller_Front::getInstance()->getRequest()->controller
+    );
+
+    foreach ($this->container as $page) {
+        echo '<li class="has-dropdown"><a href="' . $page->getHref() . '">' . __($page->getLabel()) . '</a>';
+        echo '<ul class="dropdown">';
+        $subcontainer = $page->getPages();
+        foreach ($subcontainer as $subpage) {
+            $subsubcontainer = $subpage->getPages();
+            foreach ($subsubcontainer as $subsubpage) {
+                if ($subsubpage->isVisible()) {
+                    echo '<li><a href="' . $subsubpage->getHref() . '">' . __($subsubpage->getLabel()) . '</a></li>';
+                }
+            }
+        }
+        echo '</ul></li><li class="divider"></li>';
+    }
+
+    $resume = $this->domainLink(null, true) . 'resume/';
+    if (Core_Acl_Access::isAllowed($resume)) {
+        echo '<li><a href="' . $resume . '">' . __('resume') . '</a>' . '</li>';
+        echo '<li class="divider"></li>';
+    }
+
+    $vacancy = $this->domainLink(null, true) . 'vacancies/';
+    if (Core_Acl_Access::isAllowed($vacancy)) {
+        echo '<li><a href="' . $vacancy . '">' . __('vacancies') . '</a>' . '</li>';
+        echo '<li class="divider"></li>';
+    }
+
+    $tags = $this->domainLink(null, true) . 'tags';
+    if (Core_Acl_Access::isAllowed($tags)) {
+        echo '<li><a href="' . $tags . '/">' . __('tags') . '</a>' . '</li>';
+        echo '<li class="divider"></li>';
+    }
+
+    ?>
+</ul>

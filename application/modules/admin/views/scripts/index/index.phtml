@@ -1,0 +1,14 @@
+<?php
+$host = $this->domainLink(null, true);
+echo '<div class="row"><ul class="small-block-grid-4 large-block-grid-10">';
+
+echo $this->iconButton($host . 'pages/list-menu/', 'list', __('edit_menu'), '', 'size-45');
+echo $this->iconButton($host . 'pages/', 'page', __('edit_pages'), '', 'size-45');
+echo $this->iconButton($host . 'translation', 'web', __('edit_localisation'), '', 'size-45');
+echo $this->iconButton($host . 'settings', 'wrench', __('edit_website_settings'), '', 'size-45');
+echo $this->iconButton($host . 'gallery', 'thumbnails', __('edit_images'), '', 'size-45');
+echo $this->iconButton($host . 'custom-content/', 'layout', __('custom_content'), '', 'size-45');
+echo $this->iconButton($host . 'users/list-managers/', 'torso-business', __('managers'), '', 'size-45');
+echo $this->iconButton($host . 'users/list-users/', 'torsos-all', __('users'), '', 'size-45');
+echo $this->iconButton($host . 'users/mail-users/', 'mail', __('mail'), '', 'size-45');
+echo '</ul></div>';

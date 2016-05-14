@@ -1,0 +1,161 @@
+<?php
+$form = $this->service->getChildGalleryForm($this->galleryId);
+
+echo $this->reveal(
+    '<div class="small-10">' . $form . '</div>',
+    'edit',
+    'small'
+);
+
+echo $this->reveal(
+    '<div class="small-10">' . __('delete_row_message') . '</div>',
+    'remove-image',
+    'small',
+    'delete-button-confirm'
+);
+$formSearch = $this->service->getFormLoader()->getForm('ImageSearchForm');
+echo $this->reveal(
+    '<div class="small-10">' . $formSearch . '</div><div class="images"></div>',
+    'add_images',
+    'large'
+);
+$filterUrl    = $this->domainLink() . 'gallery/index/id/' . $this->galleryId;
+$addImagesUrl = $this->domainLink() . 'gallery/add-images/gallery/' . $this->galleryId . '/image/';
+
+?>
+
+<script type="text/javascript">
+
+    var container = '<?php echo $this->container ?>';
+    var closeButtonName = "<?php echo $this->translation('close')?>";
+    var imagesFolder = "<?php echo $link = $this->domainLink(1) . 'uploads/';?>";
+
+    $(document).ready(function () {
+        var spinnerLink = "<?php echo $this->domainLink(1) . 'images/ajax-loader.gif'; ?>";
+
+        $().ajaxFormSubmitter({
+            messageWindow: "form#gallery-form",
+            spinnerLink: spinnerLink,
+            useClickUrl: false,
+            formId: "form#gallery-form",
+            reload: false
+        });
+
+
+        $('#add_images_button').click(function () {
+            $('#add_images').foundation('reveal', 'open');
+            event.preventDefault();
+        });
+
+        $('form #show').click(function () {
+            event.preventDefault();
+            $.ajax(
+                {
+                    url: "<?php echo $filterUrl?>",
+                    type: 'GET',
+                    dataType: 'json',
+                    data: $('form').serializeArray(),
+                    complete: function (html) {
+                        if (html.status == 200) {
+                            var ansJson = $.parseJSON(html.responseText);
+
+
+                            if (ansJson.message) {
+                                $('.images').html(notification(ansJson.message));
+                            }
+
+                            if (ansJson.error_message) {
+                                $('.images').html(notification(ansJson.error_message));
+                            }
+
+                            if (!ansJson.data) {
+                                return false;
+                            }
+                            $('.images').html('<div class="row"><div class="columns photos">'
+                                + '<ul class="img-list medium-block-grid-6">');
+                            $.each(ansJson.data, function (i, item) {
+
+                                $('.images .img-list').append('<li id="im' + i + '"><a rel="lightbox[all]" data-tooltip href="'
+                                    + imagesFolder + item.images.full + '" title="'
+                                    + item.imageTitle + '" class="th radius has-tip">'
+                                    + '<img src="' + imagesFolder + item.images.small + '"></a>');
+                                $.each(item.compressions, function (type, size) {
+                                    var $button = '<ul class="button-group icons-list"><li><a data-tooltip id="add_sub"'
+                                        + ' href="<?php echo $addImagesUrl ?>' + i + '/type/' + type + '" class="has-tip add-image"'
+                                        + 'title="<?php echo __('add_to_gallery')?>">'
+                                        + '<i class=" fi-plus"></i></a></li></ul>';
+                                    $('.images .img-list #im' + i).append($button);
+                                });
+                                $('.images .img-list #im' + i).append('</li>');
+                            });
+                            $('.images').append('</ul></div></div>');
+                            $('.add-image').click(function () {
+                                var blockId = $(this).parent().parent().parent().prop('id');
+                                $().ajaxRequester({
+                                    url: this.href,
+                                    notice: false,
+                                    modal: false,
+                                    noticeEl: '#' + blockId,
+                                    successCallback: function (options, answer) {
+
+                                    }
+                                });
+                                event.preventDefault();
+                                return false;
+                            });
+                        }
+                    }
+                });
+        });
+
+        $().ajaxModalUrl({
+            clickClass: ".remove-image",
+            modalWindowId: "#remove-image",
+            height: 300,
+            width: 400,
+            useClickHref: true,
+            closeButtonName: closeButtonName,
+            spinnerLink: spinnerLink,
+            reload: true,
+            submitButtonSelector: '.delete-button-confirm'
+        });
+
+        $().ajaxModalFormSubmitter({
+            clickObj: ".edit-" + container,
+            modalWindowId: '#dialog-edit',
+            closeButtonName: closeButtonName,
+            spinnerLink: spinnerLink,
+            formId: "form#" + '<?php echo $form->getId()?>',
+            width: 700,
+            height: 550,
+            useClickUrl: true
+        });
+
+        $().ajaxModalFormSubmitter({
+            clickObj: "#add_sub",
+            modalWindowId: '#edit',
+            closeButtonName: closeButtonName,
+            spinnerLink: spinnerLink,
+            formId: "form#" + '<?php echo $form->getId()?>',
+            width: 700,
+            height: 550,
+            useClickUrl: true,
+            resetForm: false
+        });
+
+        $('#sortable').sortable().bind('sortupdate', function () {
+            var data = {"data": []};
+            $('#sortable li[id^=id-]').each(function (i) {
+                data.data[i] = parseInt(this.id.split('-')[1], 10);
+            });
+
+            $().ajaxRequester({
+                url: document.URL,
+                notice: false,
+                modal: false,
+                noticeEl: false,
+                data: data
+            });
+        });
+    });
+</script>

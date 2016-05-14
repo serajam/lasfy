@@ -1,0 +1,99 @@
+<?php
+$host = $this->domainLink(1);
+$this->placeholder('scripts')->captureStart();
+?>
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('#register').ajaxForm({
+            dataType: 'json',
+            success: proccess
+        });
+    });
+
+
+    function proccess(ans_json, statusText, xhr, form) {
+        var successMessageAct = "<?php
+            echo $this->translation('succeccfull_register_activation'); ?>";
+
+        var spinner = '<?php echo $host?>images/spinner.gif';
+        $('.submit-group', this).append('<img class="spinner" src = "' + spinner + '">');
+
+        $('.errors', form).remove();
+        var this_url = '<?php echo $host?>index/login';
+
+        if (ans_json.error == 'true') {
+            /*$('html, body').animate({ scrollTop: 0 }, 'slow');*/
+            $().modalMesssage({
+                closeButtonName: 'Ok',
+                modalWindowId: '#error-message-window',
+                message: ans_json.error_message,
+                type: 'error'
+            });
+
+        }
+        else if (ans_json.error == 'false') {
+            var message = ans_json.message + '<br>' + successMessageAct;
+            $().modalMesssage({
+                closeButtonName: 'Ok',
+                modalWindowId: '#error-message-window',
+                message: message,
+                type: 'success'
+            });
+            setTimeout(function () {
+                window.location.href = '<?php echo $host ?>profile/settings/index'
+            }, 2000);
+        }
+
+        if (!ans_json.formMessages) {
+
+        }
+        else {
+            if (ans_json.data) {
+                $('#captchaCode-id', form).val(ans_json.data.id);
+                $('#captchaCode-input', form).val('');
+                var captchaImg = $('img', form).attr('src')
+                    .replace(/[0-9a-zA-Z]+.png/, ans_json.data.id + '.png');
+                $('img', form).attr('src', captchaImg);
+            }
+            var numerator = 0;
+            $.each(ans_json.formMessages, function (i, item) {
+
+                if (numerator == 0) {
+                    if (i == 'files') {
+                        $('.reg_form .' + i).focus();
+                    } else {
+                        $('.reg_form #' + i).focus();
+                    }
+                }
+                numerator = numerator + 1;
+                var err = '<ul class="errors">';
+                $.each(item, function (erri, errText) {
+                    err += '<li>' + errText + '</li>';
+
+                });
+                err += '</ul>';
+                if (i == 'captchaCode') {
+                    i = 'captchaCode-input';
+                }
+                $('#' + i).parent().append(err);
+            });
+        }
+        $('img.spinner', form).remove();
+        return;
+    }
+</script>
+<?php echo $this->placeholder('scripts')->captureEnd(); ?>
+<div align="center">
+    <iframe align="middle" width="560" height="315" src="//www.youtube.com/embed/KIvmH0-Z3Lo" frameborder="0"
+            allowfullscreen></iframe>
+</div>
+<?php
+echo $this->notification($this->service);
+$this->service->getRegistrationForm()->render();
+$box = '<div class="reg_form">';
+$box .= $this->service->getRegistrationForm();
+$box .= '<div class="clear"></div></div>';
+echo $this->box($box, $this->translation('registration_form'), '400px');
+?>
+<div class="clear"></div>
+

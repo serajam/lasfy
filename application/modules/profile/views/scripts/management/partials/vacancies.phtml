@@ -1,0 +1,15 @@
+<?php
+$vacancyBlock = '';
+foreach ($this->vacancies as $v) {
+    $editLink     = '';
+    $vacancyBlock = '<div class="vacancyBlock">
+                        <div class="vacancyHead">
+                            <div class="vacancySeat">' . $v->seat . '</div>
+                            <div class="vacancyActions"><ul class="button-group">';
+    $vacancyBlock .= $this->iconButton('', 'pencil', __('editVacancy'), 'vId_' . $v->vacancyId);
+    $vacancyBlock .= '</ul></div>'; // vacancyActions
+    $vacancyBlock .= '</div>'; // vacancySeat
+    $vacancyBlock .= '</div>'; // vacancyBlock
+}
+
+echo $vacancyBlock;

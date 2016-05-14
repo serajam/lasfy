@@ -1,0 +1,59 @@
+<div class="row">
+    <?php
+    $host        = $this->domainLink();
+    $clearFilter = $host . $this->controller . '/index/';
+    echo $this->notification($this->service);
+    echo '<div id="' . $this->container . '">';
+
+    echo '<hr>';
+
+    $actions = [
+        'edit-' . $this->container   => [
+            'link'       => $host . 'vacancies/edit/',
+            'icon_class' => 'pencil',
+        ],
+        'delete-' . $this->container => [
+            'link'       => $host . $this->controller . '/delete/',
+            'icon_class' => 'trash',
+        ]
+    ];
+    $fields  = [
+        'seat'        => ['key' => 'seat'],
+        'tags'        => ['key' => 'tags'],
+        'isPublished' => ['key' => 'isPublished'],
+        'isBanned'    => ['key' => 'isBanned'],
+        'createdAt'   => ['key' => 'createdAt'],
+        'name'        => [
+            'key' => 'name', 'closure_function' => function ($item) use ($host) {
+                return '<a href="' . $host . 'users/list-users/userId/' . $item->getOwnerId() . '"">' . $item->getOwnerName() . '</a>';
+            }
+        ],
+    ];
+    echo $this->editorList($this->collection, $actions, $fields);
+    if (!empty($this->collection) && $this->collection->count() > 0) {
+        /*echo $this->paginationControl(
+            $this->collection->getPaginator(),
+            'Sliding',
+            '_pagination.phtml',
+            $this->params
+        );*/
+    }
+    echo '</div>';
+    ?>
+</div>
+<?php
+echo $this->partial(
+    $this->controller . '/partials/_windows.phtml',
+    [
+        'container' => $this->container,
+        'service'   => $this->service
+    ]
+);
+$this->scripts = $this->partial(
+    $this->controller . '/partials/_ajaxHelpers.phtml',
+    [
+        'container' => $this->container,
+        'service'   => $this->service
+    ]
+);
+?>

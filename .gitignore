@@ -1,0 +1,9 @@
+Thumbs.db
+*.log
+.idea/
+application/cache/*
+application/config/application.ini
+library/Zend/*
+public/images/captcha/*
+nbproject/
+www/uploads

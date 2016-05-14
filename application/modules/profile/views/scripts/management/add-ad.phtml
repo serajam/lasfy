@@ -1,0 +1,54 @@
+<?php $this->headScript()->appendFile('/js/tinymce/tinymce.min.js'); ?>
+
+<script type="text/javascript">
+
+    $(document).ready(function () {
+        $('.tagsSet').tagEditor({
+            placeholder: '<?php echo __('addTags') ?>',
+            clickDelete: true,
+            delimiter: tagsDelimiters,
+            sortable: false,
+            autocomplete: {
+                source: function (request, response) {
+                    $.ajax({
+                        url: '<?php echo $this->domainLink(1, true) ?>' + '/default/search/get-tags',
+                        dataType: "json",
+                        data: {
+                            tag: request.term
+                        },
+                        success: function (responseText) {
+                            response(responseText.data);
+                        }
+                    });
+                },
+                delay: 0, // show suggestions immediately
+                position: {collision: 'flip'},
+                minLength: 2
+            }
+        });
+
+        if ($('.tagsSet').hasClass('errorLight')) {
+            $formId = $('.errorLight').closest('form').attr('id');
+            $('#' + $formId + ' .tag-editor').addClass('errorLight');
+        }
+
+    });
+
+</script>
+<div class="row">
+    <?php echo $this->notification($this->service); ?>
+    <ul class="tabs" data-tab="'" id="add-adsTabs">
+        <li class="tab-title twoTabs active"><a href="#panel2-1">
+                <h3 class="subheader no-margin"><?php echo __('applyVacancy') ?></h3></a></li>
+        <li class="tab-title twoTabs"><a href="#panel2-2">
+                <h3 class="subheader no-margin"><?php echo __('applyResume') ?></h3></a></li>
+    </ul>
+    <div class="tabs-content">
+        <div class="content active p30" id="panel2-1">
+            <?php echo $this->vacancyForm; ?>
+        </div>
+        <div class="content p30" id="panel2-2">
+            <?php echo $this->resumeForm; ?>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,51 @@
+<?php echo $this->doctype(Zend_View_Helper_Doctype::HTML5); ?>
+<?php $host = $this->domainLink(1, true); ?>
+<!--[if IE 8]>
+<html class="no-js lt-ie9" lang="en"> <![endif]-->
+<!--[if gt IE 8]><!-->
+<html class="no-js" lang="en"> <!--<![endif]-->
+<head>
+    <meta name="viewport" content="width=device-width"/>
+    <?php
+    $lang = Zend_Registry::get('language');
+    echo $this->headMeta()->appendHttpEquiv('Content-Type', 'text/html; charset=UTF-8');
+    echo $this->headTitle();
+    $this->headLinks(1);
+    echo $this->headLink();
+    if (Zend_Registry::isRegistered('navigation') && Zend_Auth::getInstance()->hasIdentity()) {
+        $menu = Zend_Registry::get('navigation');
+        $this->navigation($menu);
+        $this->navigation()->menu()->setPartial('partial/menu.phtml');
+        $this->navigation()->breadcrumbs()->setPartial('partial/breadcrumbs.phtml');
+    }
+    ?>
+    <!--[if lte IE 8]>
+    <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+    <link rel="icon" href="/favicon.ico" type="image/x-icon"/>
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon"/>
+</head>
+<body>
+<nav class="top-bar" data-topbar>
+    <ul class="title-area">
+        <!-- Title Area -->
+        <li class="name">
+            <h1>
+                <a href="<?php echo $host ?>admin/">
+                    <?php echo __('dashboard') ?>
+                </a>
+            </h1>
+        </li>
+        <li class="toggle-topbar menu-icon"><a href="#"><span><?php echo __('menu') ?></span></a></li>
+    </ul>
+    <section class="top-bar-section">
+        <!-- Left Nav Section -->
+        <?php echo $this->navigation()->menu(); ?>
+        <!-- Right Nav Section -->
+        <?php echo $this->rightMenu(); ?>
+    </section>
+</nav>
+
+<div class="row">
+    <hr>
+    <?php echo $this->navigation()->breadcrumbs() ?>
+</div>

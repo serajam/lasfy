@@ -1,0 +1,16 @@
+<div class="row">
+    <div class="tab-content" id="tab1">
+        <?php
+        $lang = Zend_Registry::get('language');
+        if (empty($this->pages)) {
+            return false;
+        }
+        echo '<div class="blog">';
+        foreach ($this->pages as $step => $p) {
+            ?>
+            <h6>
+                <a href="<?php echo $this->domainLink(1) . $lang . '/' . $p->slug . '.html' ?>"><?php echo $p->title ?></a>
+            </h6>
+        <?php } ?>
+    </div>
+</div>

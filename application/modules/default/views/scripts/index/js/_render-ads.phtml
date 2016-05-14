@@ -1,0 +1,270 @@
+<script type="text/javascript">
+
+    var currentUserId = parseInt("<?php echo $this->userId; ?>");
+    var hostNoLang = "<?php echo $this->domainLink(1); ?>";
+    var hostWithLang = "<?php echo $this->domainLink(1, true); ?>";
+    var adTplLink = hostNoLang + 'assets/templates/ad-list.html';
+    var closeLink = hostNoLang + 'images/close.png';
+    var spinnerLink = hostNoLang + 'images/loading.gif';
+
+    var vBlock = '.vacanciesContainer';
+    var rBlock = '.resumesContainer';
+    var jBlock = '.vacanciesJoobleContainer';
+    var vPagination = '#vacanciesPagination';
+    var rPagination = '#resumesPagination';
+    var jPagination = '#jooblePagination';
+    var noChanges = 'noChange';
+    var dateFormat = 'dd/mm/yy';
+
+    var viewTextStatic = {
+        openText: '<?php echo __("open") ?>',
+        closeText: '<?php echo __("close") ?>',
+        contactAuthorText: '<?php echo __('contact_author') ?>',
+        requirementsText: '<?php echo __("requirements") ?>',
+        descriptionText: '<?php echo __("vacancyDescription") ?>',
+        offerText: '<?php echo __("offer") ?>',
+        tagsText: '<?php echo __("tags") ?>',
+        userAdText: '<?php echo __('yourAd') ?>',
+        noAdsText: '<?php echo __("noAds") ?>',
+        experienceText: '<?php echo __("experience") ?>',
+        expectationsText: '<?php echo __("expectations") ?>',
+        goalsText: '<?php echo __("goals") ?>',
+        vacancyDescriptionText: '<?php echo __("vacancyDescription") ?>',
+        detailsText: '<?php echo __("details_on_site") ?>'
+    };
+
+    var tagEditorOptions = {
+        tagObj: '.post-tag',
+        tagsContainer: '#searchTags',
+        requestAtOnce: true,
+        searchButton: '#search',
+        searchFormId: '#searchForm',
+        searchUrlRequest: false,
+        spinnerLink: spinnerLink,
+        closeLink: closeLink,
+        applyTemplateFunction: function (obj) {
+            makeAdsBlocks(obj);
+            $().tagsSearchWorker(this);
+            return false;
+        }
+    };
+
+    var appendPagination = function (paginationHtml, adContainer, paginationContainer) {
+        if (paginationHtml == null) {
+            return '';
+        }
+        if (!$(paginationContainer).length) {
+            //$(adContainer).parent().append('<div id="' + paginationContainer.replace('#', '') + '"></div>');
+        }
+
+        $(paginationContainer).html('').html(paginationHtml);
+
+    };
+
+    var isAdTemporary = function (ad) {
+        return parseInt(ad.isTemporary);
+    };
+
+    var userCanContactAuthor = function (ad, currentUserId) {
+        if (currentUserId == null || ad.userId == null) {
+            return false;
+        }
+        return currentUserId !== parseInt(ad.userId);
+    };
+
+    var isUserAdOwner = function (ad, currentUserId) {
+        if (currentUserId == null || ad.userId == null) {
+            return false;
+        }
+        return currentUserId == parseInt(ad.userId);
+    };
+
+    var renderVacancies = function (vacanciesList, pagination, adsTpl) {
+        var ads = '';
+        $.each(vacanciesList, function (key, vacancy) {
+
+                var view = {
+
+                    vacancyBlock: true,
+
+                    adView: {
+                        id: vacancy.vacancyId,
+                        seat: vacancy.seat,
+                        requirements: vacancy.requirements,
+                        description: vacancy.vacancyDescription,
+                        offer: vacancy.offer,
+                        linkToContact: hostWithLang + 'profile/index/messages/vid/' + vacancy.vacancyId
+                    },
+
+                    date: function () {
+                        return $.datepicker.formatDate(dateFormat, new Date(vacancy.createdAt))
+                    },
+
+                    tags: vacancy.tags,
+
+                    markUserAd: function () {
+                        if (!isUserAdOwner(vacancy, currentUserId)) {
+                            return '';
+                        }
+                        return function (text, render) {
+                            return render(text);
+                        }
+
+                    },
+                    signedAd: function () {
+                        if (isAdTemporary(vacancy) || !userCanContactAuthor(vacancy, currentUserId)) {
+                            return '';
+                        }
+                        return function (text, render) {
+                            return render(text);
+                        }
+                    }
+                };
+                $.extend(view, viewTextStatic);
+                ads += Mustache.render(adsTpl, view);
+            }
+        );
+        $(vBlock).html('').html(ads);
+        appendPagination(pagination, vBlock, vPagination);
+        ads = null;
+    };
+
+    var renderResume = function (resumeList, pagination, adsTpl) {
+        var ads = '';
+        $.each(resumeList, function (key, resume) {
+
+                var view = {
+
+                    resumeBlock: true,
+
+                    adView: {
+                        id: resume.resumeId,
+                        seat: resume.seat,
+                        experience: resume.experience,
+                        expectations: resume.expectations,
+                        goals: resume.goals,
+                        linkToContact: hostWithLang + 'profile/index/messages/rid/' + resume.resumeId
+                    },
+
+                    date: function () {
+                        return $.datepicker.formatDate(dateFormat, new Date(resume.createdAt))
+                    },
+
+                    tags: resume.tags,
+
+                    markUserAd: function () {
+                        if (!isUserAdOwner(resume, currentUserId)) {
+                            return '';
+                        }
+                        return function (text, render) {
+                            return render(text);
+                        }
+                    },
+                    signedAd: function () {
+                        if (isAdTemporary(resume) || !userCanContactAuthor(resume, currentUserId)) {
+                            return '';
+                        }
+                        return function (text, render) {
+                            return render(text);
+                        }
+                    }
+                };
+                $.extend(view, viewTextStatic);
+                ads += Mustache.render(adsTpl, view);
+            }
+        );
+
+        $(rBlock).html('').html(ads);
+        appendPagination(pagination, rBlock, rPagination);
+        ads = null;
+    };
+
+    var renderJooble = function (joobleList, pagination, adsTpl) {
+        var ads = '';
+        $.each(joobleList, function (key, jooble) {
+
+                var view = {
+
+                    joobleVacancyBlock: true,
+
+                    adView: {
+                        id: jooble.vacancyId,
+                        seat: jooble.seat,
+                        requirements: jooble.requirements,
+                        vacancyDescription: jooble.vacancyDescription,
+                        offer: jooble.offer,
+                        externalLink: jooble.link,
+                        source: jooble.source
+                    },
+
+                    date: function () {
+                        return $.datepicker.formatDate(dateFormat, new Date(jooble.createdAt))
+                    },
+
+                    tags: jooble.tags
+
+                };
+                $.extend(view, viewTextStatic);
+                ads += Mustache.render(adsTpl, view);
+            }
+        );
+
+        $(jBlock).html('').html(ads);
+        appendPagination(pagination, jBlock, jPagination);
+        ads = null;
+    };
+
+
+    function makeAdsBlocks(obj) {
+        $.get(adTplLink, function (template, textStatus, jqXhr) {
+            var adsTpl = $(template).filter('#adsTpl').html();
+            if (obj.data.vacancies && obj.data.vacancies.constructor == Array) {
+                renderVacancies(obj.data.vacancies, obj.data.vacanciesPagination, adsTpl);
+            }
+            else if (!obj.data.paging) {
+                $(vBlock).html('');
+                $(vPagination).html('');
+            }
+            if (obj.data.resumes && obj.data.resumes.constructor == Array) {
+                renderResume(obj.data.resumes, obj.data.resumesPagination, adsTpl);
+            }
+            else if (!obj.data.paging) {
+                $(rBlock).html('');
+                $(rPagination).html('');
+            }
+            if (obj.data.vacanciesJooble && obj.data.vacanciesJooble.constructor == Array) {
+                renderJooble(obj.data.vacanciesJooble, obj.data.jooblePagination, adsTpl);
+            }
+            else if (!obj.data.paging) {
+                $(jBlock).html('');
+                $(jPagination).html('');
+            }
+            $('span.tooltip').remove();
+            $(document).foundation();
+            initPaging();
+            $().tagsSearchWorker(tagEditorOptions);
+        });
+
+        return true;
+    }
+
+    function initPaging() {
+        var paginationSel = 'div#vacanciesPagination, div#resumesPagination, div#jooblePagination';
+        $(paginationSel).off();
+        $(paginationSel).on('click', '.getPage', function (event) {
+            event.preventDefault();
+            href = $('#searchForm').attr('action');
+            url = this.href.split('/').reverse();
+            href += "/" + url[3] + "/" + url[2] + "/" + url[1] + "/" + url[0];
+            $('#searchForm').attr('action', href);
+            $('#search').click();
+            return false;
+        });
+    }
+
+    $(document).ready(function () {
+        initPaging();
+    });
+
+
+</script>

@@ -1,0 +1,164 @@
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('.Resources-list').css({'display': 'none'});
+        $('a.module-link').click(function () {
+
+            $(this).parent().css({'display': 'inline'});
+
+            var $list = $(this).parent().parent();
+            var display = $('.Resources-list', $list).css('display');
+            if (display == 'none') {
+                $('.Resources-list', $list).css({'display': 'inline'});
+            }
+            else {
+                $('.Resources-list', $list).css({'display': 'none'});
+            }
+
+        });
+
+        $('.Resources-check').click(function () {
+            var $list = $(this).parent();
+            var selected = ($('input', $list).attr('checked'));
+
+            $('ul li', $list).each(function () {
+                if (selected == false) {
+                    $('input', this).removeAttr('checked');
+                }
+                else if (selected == true) {
+                    $('input', this).attr({'checked': 'checked'});
+                }
+            });
+        });
+    });
+</script>
+<div class="row">
+    <?php
+    echo $this->pageTitle();
+    if ($this->service->getError()) {
+        echo '<span class="error">' . $this->service->getError() . '</span>';
+    }
+
+    $form        = $this->service->getValidator();
+    $modulesHtml = '';
+    $defMod      = '';
+    $defContrl   = '';
+    $defAct      = '';
+    if (!empty($this->acl)) {
+        if (!empty($this->post['defaultModule'])) {
+            $defMod = $this->post['defaultModule'];
+        }
+
+        if (!empty($this->post['defaultController'])) {
+            $defContrl = $this->post['defaultController'];
+        }
+
+        if (!empty($this->post['defaultAction'])) {
+            $defAct = $this->post['defaultAction'];
+        }
+        $modulesHtml .= '<div class="large-8 modules-list columns">';
+
+        foreach ($this->acl as $mid => $module) {
+            $selected = '';
+            if ($mid == $defMod) {
+                $selected = 'checked="checked"';
+            }
+
+            $modulesHtml .= '<div class="module-div">';
+            $modulesHtml .= '<h5 class="module"><a class="module-link">'
+                . $this->translation($module['moduleName'])
+                . ' (' . $module['moduleName'] . ')</a> <input class="Resources-radio" ' . $selected
+                . ' type="radio" value="'
+                . $mid . '" name="defaultModule">
+                </h5>';
+
+            if (!empty($module['Resources'])) {
+                $rclass     = 'disabled';
+                $active_res = [];
+                if (!empty($this->post['Resources'])) {
+                    foreach ($this->post['Resources'] as $key => $r) {
+                        if (array_key_exists($key, $module['Resources'])) {
+                            $rclass       = '';
+                            $active_res[] = $key;
+                        }
+                    }
+                }
+
+                $modulesHtml .= '<table border=1 class="default-table Resources-list ' . $rclass . '">';
+                $modulesHtml .= '<thead>
+                                    <tr>
+                                        <th width=20>' . $this->translation('default') . '</th>
+                                        <th width=100>' . $this->translation('resource') . '</th>
+                                        <th width=150>' . $this->translation('action') . '</th>
+                                        <th width=20>' . $this->translation('selected') . '</th>
+                                    </tr>
+                                </thead>';
+                $modulesHtml .= '<tbody>';
+                foreach ($module['Resources'] as $rid => $Resources) {
+
+                    $checked = '';
+                    if (!empty($active_res) && in_array($rid, $active_res)) {
+                        $checked = 'checked="checked"';
+                    }
+
+                    $selected = '';
+                    if ($rid == $defContrl) {
+                        $selected = 'checked="checked"';
+                    } else {
+                        if ($defContrl == 0) {
+                            $defContrl = -1;
+                            $selected  = 'checked="checked"';
+                        }
+                    }
+
+                    $resourseHeader = '<tr><td class="res-title">
+                                        <input class="Resources-radio" ' . $selected . ' type="radio" value="' . $rid . '" name="defaultController" />
+                                        </td><td class="resourceName">' . ' ' . $Resources['resourceName']
+                        . '</td><td>&nbsp;</td><td><input type="checkbox" class="Resources-check" name = "Resources[' . $rid . ']" ' . $checked . '></td><tr>';
+
+                    $modulesHtml .= $resourseHeader;
+                    if (!empty($Resources['actions'])) {
+
+                        foreach ($Resources['actions'] as $aid => $action) {
+                            $modulesHtml .= '<tr>';
+                            $aclass = '';
+                            if (!empty($this->post['actions'])) {
+                                foreach ($this->post['actions'] as $actions) {
+                                    foreach ($actions as $key => $a) {
+                                        if ($key === $aid) {
+                                            $aclass = 'checked="checked"';
+                                        }
+                                    }
+                                }
+                            }
+                            $selected = '';
+                            if ($aid == $defAct) {
+                                $selected = 'checked="checked"';
+                            } else {
+                                if ($defAct == 0) {
+                                    $defAct   = -1;
+                                    $selected = 'checked="checked"';
+                                }
+                            }
+
+                            $modulesHtml .= '<td><input ' . $selected . ' class="Resources-radio" type="radio" value="'
+                                . $aid . '" name="defaultAction"></td><td>&nbsp;</td><td>'
+                                . ' '
+                                . $this->translation($action['rightName'])
+                                . '</td><td><input type="checkbox" class="action-check" name = "actions[' . $rid . '][' . $aid . ']" ' . $aclass . ' />
+                                </td>';
+                            $modulesHtml .= '</tr>';
+                        }
+                    }
+                }
+                $modulesHtml .= '</tbody></table>';
+            }
+
+            $modulesHtml .= '</div>';
+        }
+        $modulesHtml .= '<input type="submit" value="' . $this->translation('save') . '" class="input-submit button" />';
+    }
+
+    $form->getElement('rights')->setValue($modulesHtml);
+    echo '<div class="row">' . $form . '</div>';
+    ?>
+</div>

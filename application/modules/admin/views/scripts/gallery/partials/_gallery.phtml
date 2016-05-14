@@ -1,0 +1,62 @@
+<?php
+$form = $this->service->getGalleryForm();
+
+echo $this->reveal(
+    '<div class="small-10">' . $form . '</div>',
+    'edit',
+    'small'
+);
+
+echo $this->reveal(
+    '<div class="small-10">' . __('delete_row_message') . '</div>',
+    'delete-gallery',
+    'small',
+    'delete-button-confirm'
+);
+?>
+
+<script type="text/javascript">
+
+    var container = '<?php echo $this->container ?>';
+    var closeButtonName = "<?php echo $this->translation('close')?>";
+
+    $(document).ready(function () {
+        var spinnerLink = "<?php echo $this->domainLink(1) . 'images/ajax-loader.gif'; ?>";
+        ;
+
+        $().ajaxModalUrl({
+            clickClass: ".delete",
+            modalWindowId: "#delete-gallery",
+            height: 300,
+            width: 400,
+            useClickHref: true,
+            closeButtonName: closeButtonName,
+            spinnerLink: spinnerLink,
+            reload: true,
+            submitButtonSelector: '.delete-button-confirm'
+        });
+
+        $().ajaxModalFormSubmitter({
+            clickObj: ".edit-" + container,
+            modalWindowId: '#dialog-edit',
+            closeButtonName: closeButtonName,
+            spinnerLink: spinnerLink,
+            formId: "form#" + '<?php echo $form->getId()?>',
+            width: 700,
+            height: 550,
+            useClickUrl: true
+        });
+
+        $().ajaxModalFormSubmitter({
+            clickObj: "#add",
+            modalWindowId: '#edit',
+            closeButtonName: closeButtonName,
+            spinnerLink: spinnerLink,
+            formId: "form#" + '<?php echo $form->getId()?>',
+            width: 700,
+            height: 550,
+            useClickUrl: true
+        });
+
+    });
+</script>

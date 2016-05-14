@@ -1,0 +1,40 @@
+<?php
+$host = $this->domainLink();
+echo '<div class="row">';
+echo $this->buttonLink(
+    $host . 'gallery/edit-gallery/',
+    $this->translation('add_gallery'),
+    'id="add"',
+    'small'
+);
+echo '</div>';
+
+$galleries = $this->service->getGalleries();
+if ($galleries && $galleries->count()) {
+    $editLink = $host . 'gallery/edit-gallery/';
+    $remove   = $host . 'gallery/delete-gallery/';
+    $fields   = [
+        'galleryName' => ['key' => 'galleryName'],
+    ];
+    $actions  = [
+        'edit'   => [
+            'link'       => $editLink,
+            'icon_class' => 'pencil',
+        ],
+        'delete' => [
+            'link'       => $remove,
+            'icon_class' => 'x',
+        ],
+    ];
+    echo '<div class="row">';
+    echo $this->editorList($galleries, $actions, $fields);
+    echo '</div>';
+}
+
+$this->scripts = $this->partial(
+    $this->controller . '/partials/_gallery.phtml',
+    [
+        'container' => $this->container,
+        'service'   => $this->service
+    ]
+);

@@ -1,0 +1,10 @@
+<div class="row">
+    <?php
+
+    $i = 1;
+    foreach ($this->jobs as $job) {
+        $link = $this->domainLink(1, true) . 'tag/' . mb_strtolower($job['tagName']);
+        echo '<div class="medium-2 columns city-tag"><a href="' . $link . '">' . $job['tagName'] . '</a></div>';
+    }
+    ?>
+</div>

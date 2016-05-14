@@ -1,0 +1,14 @@
+<?php
+
+echo $this->reveal(
+    '<div class="small-10">' . $this->service->getValidator() . '</div>',
+    'dialog-edit',
+    'small'
+);
+
+echo $this->reveal(
+    '<div class="small-10">' . __('delete_row_message') . '</div>',
+    'dialog-delete',
+    'small',
+    'delete-button-confirm'
+);

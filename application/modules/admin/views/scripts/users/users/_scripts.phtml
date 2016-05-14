@@ -1,0 +1,195 @@
+<?php $host = $this->domainLink() ?>
+<script>
+    $(document).ready(function () {
+        var spinnerLink = "<?php echo $this->domainLink(1) . 'images/ajax-loader.gif'; ?>";
+        var closeButtonName = "<?php echo $this->translation('close')?>";
+
+        $().ajaxModalFormSubmitter({
+            clickObj: ".add-user",
+            modalWindowId: "#dialog-add-user",
+            closeButtonName: closeButtonName,
+            spinnerLink: spinnerLink,
+            formId: "form#new_user"
+        });
+
+        $().ajaxModalFormSubmitter({
+            clickObj: ".edit-user",
+            modalWindowId: "#dialog-Users",
+            closeButtonName: closeButtonName,
+            spinnerLink: spinnerLink,
+            formId: "form#user",
+            useClickUrl: true,
+            editor: true
+        });
+
+        $().ajaxModalFormSubmitter({
+            clickObj: ".edit-password",
+            modalWindowId: "#dialog-password",
+            closeButtonName: closeButtonName,
+            spinnerLink: spinnerLink,
+            formId: "form#edit_password",
+            useClickUrl: true
+        });
+
+
+        /*    $('.edit-user').click(function () {
+         var href = $(this).attr('href');
+         $('#dialog-Users .errors, .ajax-errors').html('');
+         $('#user input').val('');
+
+         $('#dialog-Users .errors').html('<img src="/images/ajax-loader.gif"> ' +
+         '<?php echo $this->translation('load_data')?>');
+         $('#user').attr('action', href);
+         $.ajax({url: href, dataType: "json", type: "GET", data: '',
+         complete: function (res, st) {
+         if (st == "success") {
+         if (res.responseText) {
+         var answer = eval("(" + res.responseText + ")");
+         $.each(answer.data, function (id, value) {
+         $('#user, #' + id).val(value);
+         });
+         $('#dialog-Users .errors, .ajax-errors').html('');
+         }
+         }
+         return false;
+         }
+         });
+         showDialog('#dialog-Users', '#user');
+
+         return false;
+         });
+
+         $('.add-user').click(function () {
+         var href = '<?php echo $host ?>' + 'index/adduser';
+         $('#dialog-add-user .errors, .ajax-errors').html('');
+         $('#new_user input').val('');
+
+         $('#new_user').attr('action', href);
+         showDialog('#dialog-add-user', '#new_user');
+
+         return false;
+         });*/
+
+        /*   $('.edit-password').click(function () {
+         var href = $(this).attr('href');
+         $('#dialog-password .errors, .ajax-errors').html('');
+         $('#edit_password input').val('');
+
+         $('#edit_password').attr('action', href);
+         showDialog('#dialog-password', '#edit_password');
+
+         return false;
+         });*/
+
+        function showDialog(id, form_id) {
+            var dialog = $(id).dialog({
+                resizable: false,
+                width: 450,
+                modal: true,
+                autoOpen: false,
+                buttons: {
+                    "Ок": function () {
+                        $(form_id).ajaxSubmit({
+                            success: function (responseText) {
+                                $(id + ' .errors, .ajax-errors').html('');
+                                var ans_json = eval('(' + responseText + ')');
+                                if (ans_json.error == 'true') {
+                                    $(id + ' .errors').html(ans_json.error_message);
+                                }
+                                if (ans_json.formMessages) {
+                                    $(id + ' .ajax-errors').remove();
+                                    $.each(ans_json.formMessages, function (i, item) {
+                                        var err = '<ul class="ajax-errors">';
+                                        $.each(item, function (erri, errText) {
+                                            err += '<li>' + errText + '</li>';
+                                        });
+                                        err += '</ul>';
+                                        $(id + ' #' + i).parent().append(err);
+                                    });
+                                }
+                                if (ans_json.message) {
+                                    $(id + ' .errors').html(ans_json.message);
+                                }
+                                return false;
+                            }
+                        });
+                        return false;
+                    },
+                    '<?php echo $this->translation('close')?>': function () {
+                        $(this).dialog("close");
+                        return false;
+                    }
+                }
+            });
+            dialog.parent('.ui-dialog').wrap('<div class="jqui"></div>');
+            dialog.dialog('open');
+        }
+
+        $().ajaxModalFormSubmitter({
+            clickObj: ".change_role",
+            modalWindowId: "#dialog-role",
+            closeButtonName: closeButtonName,
+            spinnerLink: spinnerLink,
+            formId: "#user_role",
+            width: 500,
+            height: 400,
+            useClickUrl: true
+        });
+
+        $().ajaxModalUrl({
+            clickClass: ".checkedParam",
+            modalWindowId: "#changeUserState",
+            closeButtonName: closeButtonName,
+            spinnerLink: spinnerLink,
+            reload: false,
+            submitButtonSelector: '.change-button',
+            //requestType: "POST",
+            onClickFunction: function (obj) {
+                var allow_url = '<?php echo $host . 'users/' ?>';
+                var selected = $(obj).prop("checked");
+                var allow = 0;
+
+                if (selected === true) {
+                    allow = 1;
+                }
+
+                var userId = $(obj).val();
+                var itemId = $(obj).prop("id").split("_");
+                allow_url = allow_url + itemId[0] + "/userId/" + userId +
+                    "/" + itemId[0] + "/" + allow;
+                this.ajaxUrl = allow_url;
+
+                return true;
+            },
+            onCompleteFunction: function (ans_json, obj, clickObj) {
+                var selected = $(clickObj).prop("checked");
+
+                if (selected === true) {
+                    $(clickObj).prop("checked", false);
+                } else {
+                    $(clickObj).prop("checked", true);
+                }
+
+                return true;
+            }
+        });
+
+        $().ajaxModalUrl({
+            clickClass: ".delete",
+            modalWindowId: "#delete",
+            closeButtonName: closeButtonName,
+            spinnerLink: spinnerLink,
+            reload: false,
+            submitButtonSelector: '.delete-button',
+            //requestType: "POST",
+            onCompleteFunction: function (ans, obj, clickObj) {
+                $(clickObj).closest('tr').remove();
+
+                return true;
+            }
+        });
+
+
+    });
+
+</script>

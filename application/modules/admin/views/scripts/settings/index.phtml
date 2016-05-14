@@ -1,0 +1,71 @@
+<div class="row">
+    <?php
+    $host       = $this->domainLink();
+    $editLink   = $host . $this->controller . '/edit/';
+    $deleteLink = $host . $this->controller . '/delete/';
+    echo $this->pageTitle();
+    echo $this->notification($this->service);
+
+    echo $this->buttonLink(
+        $editLink,
+        $this->translation('add_setting'),
+        'id="add-' . $this->container . '"',
+        'small'
+    );
+
+    $collection = $this->service->getCollection();
+
+    $fields  = [
+        'paramDesc'  => ['key' => 'paramDesc',],
+        'paramName'  => [
+            'key'              => 'paramName',
+            'closure_function' => function ($model) {
+                return __($model->paramName);
+            }
+        ],
+        'paramValue' => ['key' => 'paramValue'],
+    ];
+    $actions = [
+        'edit-' . $this->container   => [
+            'link'       => $editLink,
+            'icon_class' => 'pencil',
+        ],
+        'delete-' . $this->container => [
+            'link'       => $deleteLink,
+            'icon_class' => 'trash',
+        ]
+    ];
+    if (empty($collection) || !$collection->count()) {
+        return false;
+    }
+    ?>
+    <dl class="accordion" data-accordion>
+        <?php
+        foreach ($collection->getGroups() as $key => $group) {
+            ?>
+            <dd class="accordion-navigation">
+                <a href="#panel-<?php echo $key ?>"><?php echo __($key) ?></a>
+
+                <div id="panel-<?php echo $key ?>" class="content">
+                    <?php echo $this->editorList($group, $actions, $fields); ?>
+                </div>
+            </dd>
+        <?php } ?>
+    </dl>
+</div>
+
+<?php
+$this->scripts .= $this->partial(
+    $this->controller . '/partials/_windows.phtml',
+    [
+        'container' => $this->container,
+        'service'   => $this->service
+    ]
+);
+$this->scripts .= $this->partial(
+    $this->controller . '/partials/_ajaxHelpers.phtml',
+    [
+        'container' => $this->container,
+        'service'   => $this->service
+    ]
+); ?>

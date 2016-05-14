@@ -1,0 +1,26 @@
+User-agent: *
+Disallow: /application/modules/admin
+Disallow: /application/cache
+Disallow: /application/config
+Disallow: /application/fonts
+Disallow: /application/layout
+Disallow: /application/log
+Disallow: /application/modules
+Disallow: /library
+Disallow: /vendor
+Disallow: /bin
+
+User-agent: Yandex
+Disallow: /application/modules/admin
+Disallow: /application/cache
+Disallow: /application/config
+Disallow: /application/fonts
+Disallow: /application/layout
+Disallow: /application/log
+Disallow: /application/modules
+Disallow: /library
+Disallow: /vendor
+Disallow: /bin
+Host: www.lasfy.com
+Sitemap: http://lasfy.com/sitemap.xml.gz
+Sitemap: http://lasfy.com/sitemap.xml

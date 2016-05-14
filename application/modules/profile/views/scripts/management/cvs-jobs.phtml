@@ -1,0 +1,44 @@
+<div class="row">
+    <?php echo $this->notification($this->service); ?>
+    <ul class="tabs" data-tab="'" id="cvsJobsTabs">
+        <li class="tab-title twoTabs active"><a href="#panel2-1">
+                <h3 class="subheader no-margin"><?php echo __('myVacancies') ?></h3></a></li>
+        <li class="tab-title twoTabs"><a href="#panel2-2">
+                <h3 class="subheader no-margin"><?php echo __('myResumes') ?></h3></a></li>
+    </ul>
+    <div class="tabs-content">
+        <div class="content active p30" id="panel2-1">
+            <?php
+            echo $this->partial(
+                $this->controller . '/partials/_vacancies.phtml',
+                [
+                    'vacancies' => $this->vacancies
+                ]
+            );
+            ?>
+        </div>
+        <div class="content p30" id="panel2-2">
+            <?php
+            echo $this->partial(
+                $this->controller . '/partials/_resumes.phtml',
+                [
+                    'resumes' => $this->resumes
+                ]
+            );
+            ?>
+        </div>
+    </div>
+</div>
+<?php
+$this->scripts .= $this->partial(
+    $this->controller . '/partials/_windows.phtml',
+    [
+        'service'   => $this->service,
+        'container' => $this->container
+    ]
+);
+
+$this->scripts .= $this->partial(
+    $this->controller . '/partials/_js.phtml'
+);
+?>

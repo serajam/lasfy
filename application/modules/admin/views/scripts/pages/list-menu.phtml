@@ -1,0 +1,62 @@
+<?php
+/**
+ * @var $service PagesService
+ */
+$service   = $this->service;
+$container = 'menu-list';
+
+$host       = $this->domainLink();
+$editLink   = $host . $this->controller . '/edit-menu/';
+$deleteLink = $host . $this->controller . '/delete-menu/';
+
+echo '<div class="row">';
+echo $this->notification($service);
+echo '<div id="' . $this->container . '">';
+echo $this->buttonLink(
+    $editLink,
+    __('add_menu'),
+    'id="add_menu"',
+    'small'
+);
+$fields     = [
+
+    'menu_name'    => ['key' => 'name'],
+    'type'         => ['key' => 'type', 'closure_function' => function ($model) {
+        $types = Zend_Registry::get('types');
+        $types = array_flip($types['menuType']);
+
+        return __($types[$model->type]);
+    }],
+    'link'         => ['key' => 'link'],
+    'active'       => ['key' => 'active', 'boolean' => 1],
+    'content_name' => ['key' => 'contentTitle'],
+    'position'     => ['key' => 'position'],
+    'availability' => ['key' => 'availability', 'closure_function' => function ($model) {
+        $types = Zend_Registry::get('types');
+        $types = array_flip($types['availability']);
+
+        return __($types[$model->availability]);
+    }],
+];
+$actions    = [
+    'edit-row'   => [
+        'link'       => $editLink,
+        'icon_class' => 'pencil',
+    ],
+    'delete-row' => [
+        'link'       => $deleteLink,
+        'icon_class' => 'trash',
+    ]
+];
+$collection = $service->getMenuList();
+echo $this->editorList($collection, $actions, $fields);
+
+echo '</div></div>';
+
+$this->scripts .= $this->partial(
+    $this->controller . '/partials/_menu.phtml',
+    [
+        'container' => $this->container,
+        'service'   => $service
+    ]
+);

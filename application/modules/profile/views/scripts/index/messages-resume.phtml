@@ -1,0 +1,24 @@
+<div class="row">
+    <?php echo $this->notification($this->service); ?>
+    <div class="large-12 columns">
+        <div class="panel">
+            <h3>
+                <?php
+                echo __('resume'), ': ', $this->escape($this->resume->seat), '. <br>';
+                ?>
+            </h3>
+        </div>
+    </div>
+</div>
+<?php
+echo $this->partial(
+    $this->controller . '/partials/messageFormBlock.phtml',
+    [
+        'service'      => $this->service,
+        'userMessages' => $this->userMessages,
+        'repliers'     => $this->repliers,
+        'type'         => 'rid',
+        'addId'        => $this->addId,
+        'add'          => $this->resume
+    ]
+);

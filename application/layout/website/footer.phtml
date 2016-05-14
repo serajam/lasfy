@@ -1,0 +1,114 @@
+<div id="footer" class="show-for-medium-up">
+    <div class="row alligner ">
+        <div class="footerMenu right">
+            <a href="<?php echo $this->domainLink(1, true) ?>about.html"><?php echo __('about') ?></a>
+            <a href="<?php echo $this->domainLink(1, true) ?>contacts"><?php echo __('contacts') ?></a>
+            <a href="<?php echo $this->domainLink(1, true) ?>companies"><?php echo __('companies') ?></a>
+            <a href="<?php echo $this->domainLink(1, true) ?>agreement.html"><?php echo __('agreement') ?></a>
+            <a href="<?php echo $this->domainLink(1, true) ?>news"><?php echo __('news') ?></a>
+            <a href="<?php echo $this->domainLink(1, true) ?>blog"><?php echo __('blog') ?></a>
+            <a href="<?php echo $this->domainLink(1, true) ?>help.html"><?php echo __('help') ?></a>
+            <a href="<?php echo $this->domainLink(1, true) ?>cities"><?php echo __('cities') ?></a>
+            <a href="<?php echo $this->domainLink(1, true) ?>jobs"><?php echo __('jobs') ?></a>
+            <a href="<?php echo $this->domainLink(1, true) ?>sitemap"><?php echo __('sitemap') ?></a>
+        </div>
+    </div>
+</div>
+
+
+<div class="show-for-small-only footerMobileMenu">
+    <ul class="off-canvas-list">
+        <li><a href="<?php echo $this->domainLink(1, true) ?>about.html"><?php echo __('about') ?></a></li>
+        <li><a href="<?php echo $this->domainLink(1, true) ?>contacts"><?php echo __('contacts') ?></a></li>
+        <li><a href="<?php echo $this->domainLink(1, true) ?>companies"><?php echo __('companies') ?></a></li>
+        <li><a href="<?php echo $this->domainLink(1, true) ?>agreement.html"><?php echo __('agreement') ?></a></li>
+        <li><a href="<?php echo $this->domainLink(1, true) ?>news"><?php echo __('news') ?></a></li>
+        <li><a href="<?php echo $this->domainLink(1, true) ?>blog"><?php echo __('blog') ?></a></li>
+        <li><a href="<?php echo $this->domainLink(1, true) ?>help.html"><?php echo __('help') ?></a></li>
+        <li><a href="<?php echo $this->domainLink(1, true) ?>cities"><?php echo __('cities') ?></a></li>
+        <li><a href="<?php echo $this->domainLink(1, true) ?>jobs"><?php echo __('jobs') ?></a></li>
+        <li><a href="<?php echo $this->domainLink(1, true) ?>sitemap"><?php echo __('sitemap') ?></a></li>
+    </ul>
+</div>
+
+</div><!-- #footer -->
+
+<?php
+$this->headLinks();
+$options = Zend_Registry::get('appConfig');
+
+echo $this->headLink();
+echo $this->headScript();
+
+echo $this->scripts;
+echo $this->placeholder('scripts');
+
+echo $this->session();
+$currentUri = Zend_Controller_Front::getInstance()->getRequest()->getRequestUri();
+if (!strcmp($currentUri, '/')) {
+    $currentUri = $this->domainLink(1, true) . 'sign-in';
+} else {
+    $currentUri = urlencode($currentUri);
+    $currentUri = $this->domainLink(1, true) . 'sign-in?redirect=' . $currentUri;
+}
+?>
+<div id="endSession" class="reveal-modal small" data-reveal
+     data-options="close_on_background_click: false; close_on_esc: false;">
+    <h2><?php echo __('sessionIsExpired'); ?></h2>
+
+    <p><a href="<?php echo $currentUri; ?>" class="secondary button"><?php echo __('pleaseLogin'); ?></a></p>
+</div>
+<?php
+echo $this->modalMessages();
+?>
+
+<script>
+    (function (i, s, o, g, r, a, m) {
+        i['GoogleAnalyticsObject'] = r;
+        i[r] = i[r] || function () {
+                (i[r].q = i[r].q || []).push(arguments)
+            }, i[r].l = 1 * new Date();
+        a = s.createElement(o),
+            m = s.getElementsByTagName(o)[0];
+        a.async = 1;
+        a.src = g;
+        m.parentNode.insertBefore(a, m)
+    })(window, document, 'script', '//www.google-analytics.com/analytics.js', 'ga');
+
+    ga('create', 'UA-63149117-1', 'auto');
+    ga('send', 'pageview');
+
+</script>
+<!-- Yandex.Metrika counter -->
+<script type="text/javascript">(function (d, w, c) {
+        (w[c] = w[c] || []).push(function () {
+            try {
+                w.yaCounter30397537 = new Ya.Metrika({
+                    id: 30397537,
+                    webvisor: true,
+                    clickmap: true,
+                    trackLinks: true,
+                    accurateTrackBounce: true
+                });
+            }
+            catch (e) {
+            }
+        });
+        var n = d.getElementsByTagName("script")[0], s = d.createElement("script"), f = function () {
+            n.parentNode.insertBefore(s, n);
+        };
+        s.type = "text/javascript";
+        s.async = true;
+        s.src = (d.location.protocol == "https:" ? "https:" : "http:") + "//mc.yandex.ru/metrika/watch.js";
+        if (w.opera == "[object Opera]") {
+            d.addEventListener("DOMContentLoaded", f, false);
+        }
+        else {
+            f();
+        }
+    })(document, window, "yandex_metrika_callbacks");</script>
+<noscript>
+    <div><img src="//mc.yandex.ru/watch/30397537" style="position:absolute; left:-9999px;" alt=""/></div>
+</noscript><!-- /Yandex.Metrika counter -->
+</body>
+</html>

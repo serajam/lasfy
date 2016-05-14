@@ -1,0 +1,57 @@
+<div class="row">
+    <?php
+    $host       = $this->domainLink(null, true);
+    $aclBuilder = new Core_Acl_AclBuilder();
+    $aclBuilder->init();
+    $aclBuilder->buildFullAcl();
+    $rolesAcl      = $aclBuilder->getRoleAcl();
+    $normalizedAcl = Core_Controller_Plugin_AclNormalizer::normalizeByRole($rolesAcl);
+    $user          = Core_Model_User::getInstance();
+    echo $this->pageTitle();
+    $this->placeholder('Roles')->captureStart();
+    echo $this->buttonLink($host . 'index/add', $this->translation('create_role'));
+    if (!empty($normalizedAcl)) {
+        echo '<table>';
+        echo '<thead>
+                <tr>
+                    <th>' . $this->translation('role') . '</th>
+                    <th>' . $this->translation('action') . '</th>
+                </tr>
+            </thead>
+            <tbody>';
+        foreach ($normalizedAcl as $role => $module) {
+            echo '<tr><td>' . $module['roleCode'] . '</td><td>';
+            if ($module['editable'] == 1) {
+                echo ' <a href="' . $host . 'index/edit/id/' . $module['roleId'] . '">
+                        <i class="fi-pencil"></i>&nbsp;' . $this->translation('redact') .
+                    '</a>';
+            }
+            echo '</td></tr>';
+        }
+        echo '</tbody></table></div>';
+    }
+    $this->placeholder('Roles')->captureEnd();
+    echo $this->box($this->placeholder('Roles'));
+    ?>
+</div>
+
+<?php $this->placeholder('local_scripts')->captureStart() ?>
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('a.show-right').click(function () {
+            var $list = $(this).parent();
+            var display = $('ul.Rights-list', $list).css('display');
+            if (display == 'none') {
+                $('ul.Rights-list', $list).css({'display': 'block'});
+            }
+            else {
+                $('ul.Rights-list', $list).css({'display': 'none'});
+            }
+            return false;
+        });
+    });
+</script>
+<?php
+$this->placeholder('local_scripts')->captureEnd();
+$this->scripts .= $this->placeholder('local_scripts');
+?>

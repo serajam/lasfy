@@ -1,0 +1,75 @@
+<?php $host = $this->domainLink(); ?>
+    <div class="row">
+        <div class="error-wrapper">
+            <?php echo $this->notification($this->service); ?>
+        </div>
+        <div class="message-wrapper">
+            <?php echo $this->notification($this->service); ?>
+        </div>
+        <div class="clear"></div>
+        <form METHOD="POST" class="ajax-forms" action=''>
+            <div class="padding-left" style="padding:5px; width:150px;">
+                <b><?php echo $this->translation('search_by_word') ?></b>
+                <br><input type="text" name="search">
+            </div>
+            <?php echo $this->buttonLink(
+                '#search',
+                $this->translation('show'),
+                '',
+                'show-translation small'
+            );
+            ?>
+            <?php echo $this->buttonLink(
+                $host . 'translation/add/',
+                $this->translation('add'),
+                '',
+                'add-translation small'
+            );
+            ?>
+        </form>
+        <hr>
+        <div class="translations padding-left">
+            <form class="ajax-formss" method="POST" action="<?php echo $host . 'translation/save/' ?>">
+                <div class="no-display button-save">
+                    <div class="b-tender-action">
+                        <?php
+                        echo $this->buttonLink(
+                            null,
+                            $this->translation('save'),
+                            null,
+                            'save-translation small'
+                        );
+                        ?>
+                    </div>
+                    <div class="spinner-wrapper"></div>
+                    <div class="clear"></div>
+                </div>
+                <div class="data"></div>
+                <div class="no-display button-save">
+                    <div class="b-tender-action">
+                        <?php
+                        echo $this->buttonLink(
+                            null,
+                            $this->translation('save'),
+                            null,
+                            'save-translation small'
+                        );
+                        ?>
+                    </div>
+                    <div class="spinner-wrapper"></div>
+                    <div class="clear"></div>
+                </div>
+            </form>
+        </div>
+    </div>
+<?php
+$this->scripts = $this->scripts .= $this->partial(
+    $this->controller . '/scripts/_scripts.phtml',
+    [
+        'service' => $this->service
+    ]
+);
+$this->scripts .= $this->reveal(
+    '<div class="small-10">' . $this->service->getValidator() . '</div>',
+    'dialog-add'
+);

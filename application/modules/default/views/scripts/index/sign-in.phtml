@@ -1,0 +1,120 @@
+<?php $this->placeholder('scripts')->captureStart(); ?>
+<script language="javascript">
+    if (window.opener) {
+        //window.opener.parent.location.reload();
+        url = window.opener.document.getElementById('requested').value;
+        console.log(url);
+        if (url == '') {
+            window.opener.parent.location.replace('/');
+        } else {
+            window.opener.parent.location.replace(url);
+        }
+        window.self.close();
+    }
+
+</script>
+<?php $this->placeholder('scripts')->captureEnd(); ?>
+<div class="row">
+    <div class="columns">
+        <?php echo $this->notification($this->service); ?>
+    </div>
+    <div class="medium-6 columns">
+        <div class="columns panel">
+            <h3>
+                <?php echo __('singIn'); ?>
+            </h3>
+            <?php
+            echo $this->signInForm;
+            ?>
+        </div>
+        <div class="columns panel">
+            <h3>
+                <?php echo __('useOtherAccount'); ?>
+            </h3>
+
+            <input type="checkbox" id="checkAgreement" class="labelInline" checked="checked"/>
+            <label for="checkAgreement"><?php echo __('agreement_preview'); ?>
+                <a href="agreement.html" target=_blank><?php echo __('more_details') ?></a></label>
+
+            <div class="showElem" id="socActive">
+                <table width="100%" border="0">
+                    <tr>
+                        <td align="center">
+                            <a href="#" id="authGoogle" idp="?provider=google"><img
+                                    src="/images/socialIcons/google.png" title="Google"/></a>
+                        </td>
+                        <td align="center">
+                            <a href="" id="authTwitter" idp="?provider=twitter"><img
+                                    src="/images/socialIcons/twitter.png" title="Twitter"/></a>
+                        </td>
+                        <td align="center">
+                            <a href="#" id="authFacebook" idp="?provider=facebook"><img
+                                    src="/images/socialIcons/facebook.png" title="Facebook"/></a>
+                        </td>
+                        <td align="center">
+                            <a href="#" id="authLinkedin" idp="?provider=linkedin"><img
+                                    src="/images/socialIcons/linkedin.png" title="Linkedin"/></a>
+                        </td>
+                        <td align="center">
+                            <a href="#" id="authVkontakte" idp="?provider=vkontakte"><img
+                                    src="/images/socialIcons/vk.png" title="Vkontakte"/></a>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+            <div class="hideElem" id="socInactive">
+                <table width="100%" border="0">
+                    <tr>
+                        <td align="center">
+                            <img src="/images/socialIcons/google_grey.png" title="Google"/>
+                        </td>
+                        <td align="center">
+                            <img src="/images/socialIcons/twitter_grey.png" title="Twitter"/>
+                        </td>
+                        <td align="center">
+                            <img src="/images/socialIcons/facebook_grey.png" title="Facebook"/>
+                        </td>
+                        <td align="center">
+                            <img src="/images/socialIcons/linkedin_grey.png" title="Linkedin"/>
+                        </td>
+                        <td align="center">
+                            <img src="/images/socialIcons/vk_grey.png" title="Linkedin"/>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+
+    </div>
+    <div class="medium-6 columns">
+        <div class="columns panel">
+            <h3>
+                <?php echo __('signUp'); ?>
+            </h3>
+            <?php echo $this->signUpForm; ?>
+        </div>
+
+
+    </div>
+</div>
+<?php
+$this->scripts .= $this->partial(
+    $this->controller . '/js/socialWidgets.phtml'
+);
+echo $this->reveal(
+    '<div class="small-10">
+        <form data-abide>
+            <div class="email-field">
+                <label for="userEmail">' . __('inputYourTwitterRegistrationEmail') .
+    '<input type="email" id="userEmail" required>
+                </label>
+                <small class="error">' . __('needValidEmail') . '</small>
+                <button type="submit" class="email-button">' . __('email') . '</button>
+            </div>
+        </form>
+    </div>',
+    'dialog-email',
+    'small'
+);
+?>
+<input id="requested" type="hidden" value="<?php echo $this->requested; ?>">

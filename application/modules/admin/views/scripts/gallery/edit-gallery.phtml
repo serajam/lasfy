@@ -1,0 +1,80 @@
+<?php
+$host = $this->domainLink();
+$this->headScript()->prependFile($this->domainLink(1) . "js/jquery.sortable.min.js");
+?>
+    <div class="row">
+        <div class="large-12 columns">
+            <dl class="tabs" data-tab data-options="deep_linking:true">
+                <dd class="active"><a href="#panel2-1"><?php echo __('gallery_settings') ?></a></dd>
+                <dd><a href="#panel2-2"><?php echo __('gallery_images') ?></a></dd>
+            </dl>
+            <div class="tabs-content">
+                <div class="content active large-6" id="panel2-1">
+                    <?php
+                    $form = $this->service->getGalleryForm($this->gallery);
+                    echo $form;
+                    ?>
+                </div>
+                <div class="content large-12" id="panel2-2">
+                    <?php
+                    echo '<div class="row">';
+                    $buttons[] = $this->buttonLink(
+                        $host . 'gallery/add-images/',
+                        $this->translation('add_images'),
+                        'id="add_images_button"',
+                        'photo small'
+                    );
+                    echo $this->buttonsList($buttons);
+                    echo '<hr></div>';
+
+                    $imageCollection = $this->images;
+                    echo '<div class="row"><div class="columns photos large-12">';
+                    if ($imageCollection && $imageCollection->count()) {
+                        echo '<ul id="sortable" class="large-block-grid-6 sortable grid">';
+                        foreach ($imageCollection as $container) {
+                            echo '<li id="id-' . $container->imageId . '">';
+                            $buttons = $this->iconButton(
+                                $host . 'gallery/delete-images/image/' . $container->imageId . '/gallery/'
+                                . $this->gallery->galleryId,
+                                'x',
+                                __('remove'),
+                                '',
+                                'remove-image'
+                            );
+                            foreach ($container->images as $key => $image) {
+                                $link = $this->domainLink(1) . 'uploads/' . $image->imageName;
+                                if (!$key) {
+                                    $nextImg  = $container->images->next();
+                                    $linkNext = $this->domainLink(1) . 'uploads/' . $nextImg->imageName;
+                                    echo
+                                        '<a data-tooltip title="' . $image->imageTitle
+                                        . '" rel="lightbox[all] class="has-tip th radius" href="'
+                                        . $linkNext . '">
+                                        <img width="150"  src="' . $link . '">
+                                        </a>
+                                        <div class="panel">'
+                                        . $this->iconsList([$buttons]) . $nextImg->compression . 'px
+                                        <a target=_blank  href="' . $linkNext . '">' . __('image_link') . '</a>';
+                                }
+                            }
+                            echo '<p>' . $container->imageDesc . '</p></div></li>';
+                        }
+                        echo '</ul>';
+                    }
+                    echo '</div></div>';
+                    ?>
+                </div>
+            </div>
+        </div>
+    </div>
+
+<?php
+
+$this->scripts = $this->partial(
+    $this->controller . '/partials/_gallery-edit.phtml',
+    [
+        'container' => $this->container,
+        'service'   => $this->service,
+        'galleryId' => $this->id
+    ]
+);

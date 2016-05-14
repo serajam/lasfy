@@ -1,0 +1,68 @@
+<script type="text/javascript">
+
+    $(document).ready(function () {
+
+        $('#authVkontakte').click(function () {
+            params = $(this).attr("idp");
+            popupWindow(params);
+            return false;
+        });
+
+        $('#authFacebook').click(function () {
+            params = $(this).attr("idp");
+            popupWindow(params);
+            return false;
+        });
+
+        $('#authGoogle').click(function () {
+            params = $(this).attr("idp");
+            popupWindow(params);
+            return false;
+        });
+
+        $('#authLinkedin').click(function () {
+            params = $(this).attr("idp");
+            popupWindow(params);
+            return false;
+        });
+
+        $('#authTwitter').click(function () {
+            params = $(this).attr("idp");
+            $('#dialog-email').foundation('reveal', 'open');
+            $('.email-button').click(function () {
+                params += '&userEmail=' + $('#userEmail').val();
+                popupWindow(params);
+                $('#dialog-email').foundation('reveal', 'close');
+            });
+            return false;
+        });
+
+        $('#checkAgreement').click(function () {
+            isChecked = $(this).is(':checked');
+
+            if (isChecked) {
+                $('#socActive').removeClass('hideElem');
+                $('#socActive').addClass('showElem');
+                $('#socInactive').removeClass('showElem');
+                $('#socInactive').addClass('hideElem');
+            } else {
+                $('#socActive').addClass('hideElem');
+                $('#socActive').removeClass('showElem');
+                $('#socInactive').addClass('showElem');
+                $('#socInactive').removeClass('hideElem');
+            }
+        });
+
+        function popupWindow(params) {
+            start_url = params + "&return_to=<?php echo urlencode($this->domainLink(1, true)); ?>" + "&_ts=" + (new Date()).getTime();
+            authWin = window.open(
+                start_url,
+                "hybridauth_social_sing_on",
+                "location=0,status=0,scrollbars=0,width=800,height=500"
+            );
+
+            return false;
+        }
+    });
+
+</script>

@@ -1,0 +1,13 @@
+<?php
+echo $this->reveal(
+    '<div class="row">' . $this->service->getEmailTemplateForm() . '</div>',
+    'form-' . $this->container,
+    'small'
+);
+
+echo $this->reveal(
+    '<div class="small-10">' . __('delete_row_message') . '</div>',
+    'delete',
+    'small',
+    'delete-button-confirm'
+);

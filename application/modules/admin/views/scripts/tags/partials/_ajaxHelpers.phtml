@@ -1,0 +1,63 @@
+<?php
+$form = $this->service->getValidator();
+?>
+
+<script type="text/javascript">
+
+    var container = '<?php echo $this->container ?>';
+    var closeButtonName = "<?php echo $this->translation('close')?>";
+
+    $(document).on('focusin', function (e) {
+        if ($(event.target).closest(".mce-window").length) {
+            e.stopImmediatePropagation();
+        }
+    });
+
+    $(document).ready(function () {
+        var spinnerLink = "<?php echo $this->domainLink(1) . 'images/ajax-loader.gif'; ?>";
+
+        $().ajaxModalUrl({
+            clickClass: ".delete-" + container,
+            modalWindowId: "#dialog-delete",
+            height: 300,
+            width: 400,
+            useClickHref: true,
+            closeButtonName: closeButtonName,
+            spinnerLink: spinnerLink,
+            reload: false,
+            submitButtonSelector: '.delete-button-confirm'
+        });
+
+        $().ajaxModalFormSubmitter({
+            clickObj: ".edit-" + container,
+            modalWindowId: '#dialog-edit',
+            closeButtonName: closeButtonName,
+            spinnerLink: spinnerLink,
+            formId: "form#" + '<?php echo $form->getId()?>',
+            width: 700,
+            height: 550,
+            useClickUrl: true,
+            editor: true,
+            messagesTimeOut: 5000,
+            reload: false,
+            afterSubmitFunc: function (options, ans_json) {
+                if (ans_json.error === 'false') {
+                    $(options.formId + ' input#' + ans_json.data.idKey).val(ans_json.data.idVal);
+                }
+            }
+        });
+
+        $().ajaxModalFormSubmitter({
+            clickObj: "#add-" + container,
+            modalWindowId: '#dialog-edit',
+            closeButtonName: closeButtonName,
+            spinnerLink: spinnerLink,
+            formId: "form#" + '<?php echo $form->getId()?>',
+            width: 700,
+            height: 550,
+            useClickUrl: true,
+            reload: true
+        });
+
+    });
+</script>

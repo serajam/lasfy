@@ -1,0 +1,70 @@
+<div class="row">
+    <?php
+    $host       = $this->domainLink();
+    $editLink   = $host . $this->controller . '/edit/';
+    $deleteLink = $host . $this->controller . '/delete/';
+    echo $this->pageTitle();
+    echo $this->notification($this->service);
+
+    echo $this->buttonLink(
+        $editLink,
+        $this->translation('add_setting'),
+        'id="add-' . $this->container . '"',
+        'small'
+    );
+
+    $collection = $this->service->getCollection();
+
+    $fields  = [
+        'title'    => ['key' => 'title',],
+        'link'     => ['key' => 'link'],
+        'image'    => ['key' => 'image'],
+        'position' => ['key' => 'position'],
+    ];
+    $actions = [
+        'edit-' . $this->container   => [
+            'link'       => $editLink,
+            'icon_class' => 'pencil',
+        ],
+        'delete-' . $this->container => [
+            'link'       => $deleteLink,
+            'icon_class' => 'trash',
+        ]
+    ];
+    if (!empty($collection) && $collection->count()) {
+
+        ?>
+        <dl class="accordion" data-accordion>
+            <?php
+            $types = Zend_Registry::get('types');
+            $types = $types['cct'];
+
+            foreach ($collection->getGroups() as $key => $group) {
+
+                ?>
+                <dd>
+                    <a href="#panel-<?php echo $types[$key] ?>"><?php echo __($types[$key]) ?></a>
+                    <div id="panel-<?php echo $types[$key] ?>" class="content">
+                        <?php echo $this->editorList($group, $actions, $fields); ?>
+                    </div>
+                </dd>
+            <?php } ?>
+        </dl>
+    <?php } ?>
+</div>
+
+<?php
+$this->scripts .= $this->partial(
+    $this->controller . '/partials/_windows.phtml',
+    [
+        'container' => $this->container,
+        'service'   => $this->service
+    ]
+);
+$this->scripts .= $this->partial(
+    $this->controller . '/partials/_ajaxHelpers.phtml',
+    [
+        'container' => $this->container,
+        'service'   => $this->service
+    ]
+);

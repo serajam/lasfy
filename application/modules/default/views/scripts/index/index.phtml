@@ -1,0 +1,82 @@
+<div class="row" id="mainSearchForm">
+    <div class="text-center bigtext show-for-medium-up">
+        [ <?php echo __('tag_your_job'); ?> ]
+    </div>
+    <?php
+    echo $this->notification($this->service);
+    $form            = $this->service->getSearchForm();
+    $defaultLanguage = Zend_Registry::get('language');
+    $form->setAttrib('action', $this->domainLink(1, true) . 'default/search/get-ads');
+    echo $form;
+    ?>
+</div>
+<?php
+$class = 'hide';
+if ($this->showAll) {
+    $class = '';
+}
+
+?>
+<div class="row <?php echo $class ?>" id="mainSearchContent">
+    <div id="theForce" class="text-center bigtext show-for-medium-up"></div>
+    <ul class="tabs" data-tab="'" id="mainPageTabs">
+        <li class="tab-title threeTabs active"><a href="#panel2-1">
+                <h3 class="subheader no-margin"><?php echo __('vacancy_partners') ?></h3></a>
+        </li>
+        <li class="tab-title threeTabs"><a href="#panel2-2">
+                <h3 class="subheader no-margin"><?php echo __('vacancies') ?></h3></a>
+        </li>
+        <li class="tab-title threeTabs"><a href="#panel2-3">
+                <h3 class="subheader no-margin"><?php echo __('resumes') ?></h3></a>
+        </li>
+    </ul>
+    <div class="tabs-content">
+        <div class="content active p30" id="panel2-1">
+            <div class="vacanciesJoobleContainer"></div>
+            <div id="jooblePagination"></div>
+        </div>
+        <div class="content p30" id="panel2-2">
+            <div class="vacanciesContainer"></div>
+            <div id="vacanciesPagination"></div>
+        </div>
+        <div class="content p30" id="panel2-3">
+            <div class="resumesContainer"></div>
+            <div id="resumesPagination"></div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="homepage-text text-hidden">
+        <?php
+        if ($this->page)
+        {
+        echo $this->page->pageContent;
+        ?>
+    </div>
+    <div id="readMore">
+        <a href="#" class="right"><?php echo __('showMore') ?></a>
+    </div>
+    <div id="readLess" class="hide">
+        <a href="#" class="right"><?php echo __('showLess') ?></a>
+    </div>
+    <?php } ?>
+</div>
+
+<?php
+
+$this->scripts .= $this->partial(
+    $this->controller . '/js/_render-ads.phtml',
+    [
+        'userId' => $this->userId
+    ]
+);
+
+$this->scripts .= $this->partial(
+    $this->controller . '/js/_js.phtml',
+    [
+        'tags'   => $this->tags,
+        'userId' => $this->userId,
+        'show'   => $this->showAll
+    ]
+);

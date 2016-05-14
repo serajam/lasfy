@@ -1,0 +1,52 @@
+<?php
+$host       = $this->domainLink();
+$editLink   = $host . $this->controller . '/edit/';
+$deleteLink = $host . $this->controller . '/delete/';
+echo '<div class="row">';
+echo $this->notification($this->service);
+
+echo '<div id="' . $this->container . '">';
+echo $this->buttonLink(
+    $editLink,
+    $this->translation('add_email_template'),
+    'id="add-' . $this->container . '"'
+);
+
+$actions    = [
+    'edit-' . $this->container   => [
+        'link'       => $editLink,
+        'icon_class' => 'pencil',
+    ],
+    'delete-' . $this->container => [
+        'link'       => $deleteLink,
+        'icon_class' => 'x',
+    ]
+];
+$collection = $this->service->getCollection(false, false, $this->page);
+if ($collection->count() > 0) {
+    $urlParams = ['action' => $this->action, 'controller' => $this->controller];
+    echo $this->editorList($collection, $actions);
+    echo $this->paginationControl(
+        $collection->getPaginator(),
+        'Sliding',
+        '_pagination.phtml',
+        is_array($this->params) ? $this->params + $urlParams : $urlParams
+    );
+}
+echo '</div></div>';
+
+$this->scripts = $this->partial(
+    $this->controller . '/partials/_ajaxHelpers.phtml',
+    [
+        'container' => $this->container,
+        'service'   => $this->service
+    ]
+);
+$this->scripts .= $this->partial(
+    $this->controller . '/partials/_windows.phtml',
+    [
+        'container' => $this->container,
+        'service'   => $this->service
+    ]
+);
+

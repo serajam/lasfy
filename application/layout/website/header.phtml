@@ -1,0 +1,31 @@
+<?php echo $this->doctype(Zend_View_Helper_Doctype::HTML5); ?>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="ru" lang="ru">
+<head>
+    <meta name="viewport" content="width=device-width"/>
+    <?php
+    if ($this->title !== false) {
+        $this->headTitle($this->title, 'SET');
+    }
+    echo $this->headTitle();
+    if ($this->keywords !== false) {
+        $this->headMeta()->appendName('keywords', $this->keywords);
+    }
+    if ($this->description !== false) {
+        $this->headMeta()->appendName('description', $this->description);
+    }
+    $lang = Zend_Registry::get('language');
+    echo $this->headMeta();
+
+    ?>
+
+    <!-- IE Fix for HTML5 Tags -->
+    <!--[if lt IE 9]>
+    <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+
+
+    <!-- Google fonts -->
+    <link href='http://fonts.googleapis.com/css?family=Playfair+Display:400italic' rel='stylesheet' type='text/css'/>
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans+Condensed:300&subset=latin,cyrillic-ext'
+          rel='stylesheet' type='text/css'>
+</head>

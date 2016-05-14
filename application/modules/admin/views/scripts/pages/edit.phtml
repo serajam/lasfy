@@ -1,0 +1,9 @@
+<?php
+$host = $this->domainLink();
+echo $this->pageTitle();
+echo '<div class="b-tender-action">';
+echo $this->buttonLink($host . $this->controller, $this->translation('back'));
+echo '</div>';
+echo $this->notification($this->service);
+
+echo $this->service->getValidator($this->id);

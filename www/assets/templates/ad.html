@@ -1,0 +1,61 @@
+<script id="adsTpl" type="text/html">
+  <div class="vacancyBlock">
+    <div class="vacancyHead clearfix" id="v_h_Id_{{adView.id}}">
+      <div class="vacancySeat">{{adView.seat}}</div>
+      {{jooble}}
+      <div class="vacancyDate visible-for-medium-up">{{date}}</div>
+      <div class="vacancyActions">
+        <ul class="button-group">
+          <li>
+            <a id="v_plus_Id_{{adView.id}}" class="fs20 plus">
+            <span title="{{openText}}" data-tooltip class="has-tip">
+              <i class="fi-plus pl10"></i>
+            </span>
+            </a>
+          </li>
+          <li>
+            <a id="v_minus_Id_{{adView.id}}" class="fs20 minus hideElem">
+            <span title="{{closeText}}" data-tooltip class="has-tip">
+            <i class="fi-minus pl10"></i>
+            </span>
+            </a>
+          </li>
+        </ul>
+      </div>
+    </div>
+    <div class="vacancyInformation hideElem clearfix" id="v{{adView.id}}">
+      <div class="vacancyInnerInfo">';
+        {{jooble}}
+        {{#contactAuthor}}
+        <a href="{{adView.linkToContact}}" class="button tiny adButton">{{contactAuthorText}}</a>
+        {{/contactAuthor}}
+
+        <ul class="small-block-grid-1 medium-block-grid-3 large-block-grid-3">
+          <li>
+            <h3 class="fdU">{{requirementsText}}</h3>
+            <hr class="adHr">
+            <p>{{adView.requirements}}</p>
+          </li>
+          <li>
+            <h3 class="fdU">{{adView.descriptionText}}</h3>
+            <hr class="adHr">
+            <p>{{adView.description}}</p>
+          </li>
+          <li>
+            <h3 class="fdU">{{offerText}}</h3>
+            <hr class="adHr">
+            <p>{{adView.offer}}</p>
+          </li>
+        </ul>
+        <h3 class="fdU">{{tagsText}}</h3>
+        <hr class="adHr">
+        {{tags}}
+      </div>
+      <div class="vacancyDateStatus right visible-for-small-down">
+        <p>
+          <span class="fdU">{{date}}</span></p>
+      </div>
+    </div>
+  </div>';
+  <div id="vacanciesPagination">{{pagination}}</div>
+</script>

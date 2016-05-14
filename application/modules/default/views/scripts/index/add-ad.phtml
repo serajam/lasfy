@@ -1,0 +1,76 @@
+<?php $this->placeholder('scripts')->captureStart(); ?>
+
+<script type="text/javascript">
+
+    $(document).ready(function () {
+
+        options = {
+            placeholder: '<?php echo __('addTags') ?>',
+            clickDelete: true,
+            delimiter: tagsDelimiters,
+            sortable: false,
+            initialTags: [<?php echo $this->initialTags ?>],
+            autocomplete: {
+                source: function (request, response) {
+                    $.ajax({
+                        url: '<?php echo $this->domainLink(1, true) ?>' + 'default/search/get-tags',
+                        dataType: "json",
+                        data: {
+                            tag: request.term
+                        },
+                        success: function (responseText) {
+                            response(responseText.data);
+                        }
+                    });
+                },
+                delay: 0, // show suggestions immediately
+                position: {collision: 'flip'},
+                minLength: 2
+            }
+        };
+
+        language = "<?php echo Zend_Registry::get('language') ?>";
+
+        $('#vacancyForm').find('.tagsSet').tagEditor(options);
+
+        options.initialTags = '';
+
+        $('#resumeForm').find('.tagsSet').tagEditor(options);
+
+        if ($('.tagsSet').hasClass('errorLight')) {
+            $formId = $('.errorLight').closest('form').attr('id');
+            $('#' + $formId + ' .tag-editor').addClass('errorLight');
+        }
+
+        $('.tag-editor').attr('title', '<?php echo __('tagsSet') ?>');
+        $('.tag-editor').attr('data-tooltip', 'data-tooltip');
+        $('.tag-editor').addClass('has-tip tip-top');
+
+        $(document).foundation('tooltip', 'reflow');
+
+    });
+
+</script>
+<?php $this->placeholder('scripts')->captureEnd(); ?>
+<div class="row">
+    <?php echo $this->notification($this->service); ?>
+    <?php if (empty($this->userId)) { ?>
+        <div class="callout panel text-center">
+            <h3><?php echo __('notificationForUnauthorized') ?></h3>
+        </div>
+    <?php } ?>
+    <ul class="tabs" data-tab="'" id="addAdsTabs">
+        <li class="tab-title twoTabs active"><a href="#panel2-1">
+                <h3 class="subheader no-margin"><?php echo __('applyVacancy') ?></h3></a></li>
+        <li class="tab-title twoTabs"><a href="#panel2-2">
+                <h3 class="subheader no-margin"><?php echo __('applyResume') ?></h3></a></li>
+    </ul>
+    <div class="tabs-content">
+        <div class="content active p30" id="panel2-1">
+            <?php echo $this->vacancyForm; ?>
+        </div>
+        <div class="content p30" id="panel2-2">
+            <?php echo $this->resumeForm; ?>
+        </div>
+    </div>
+</div>

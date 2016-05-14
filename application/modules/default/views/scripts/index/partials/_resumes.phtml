@@ -1,0 +1,150 @@
+<?php
+$resumeBlock = '<div class="resumesContainer">';
+if (empty($this->resumes) || $this->resumes->count() < 1) {
+} else {
+    $userId         = $this->userId;
+    $resumeTemplate = '<div class="vacancyBlock">
+    <div class="vacancyHead clearfix" id="r_h_Id_%d">
+        <div class="vacancySeat">%s</div>
+        <div class="vacancyDate visible-for-medium-up">%s%s</div>
+        <div class="vacancyActions">
+            <ul class="button-group">%s</ul>
+        </div>
+    </div>
+    <div class="vacancyInformation hideElem clearfix" id="r%d"">
+        <div class="vacancyInnerInfo">
+            %s
+            <ul class="small-block-grid-1 medium-block-grid-3 large-block-grid-3">
+                <li><h3 class="fdU">%s</h3>
+                    <hr class="adHr">
+                    <p>%s</p></li>
+                <li><h3 class="fdU">%s</h3>
+                    <hr class="adHr">
+                    <p>%s</p></li>
+                <li><h3 class="fdU">%s</h3>
+                    <hr class="adHr">
+                    <p>%s</p></li>
+            </ul>
+            <h3 class="fdU">%s</h3>
+            <hr class="adHr">
+            %s
+        </div>
+        <div class="vacancyDateStatus right visible-for-small-down">
+            <p><span class="fdU">%s</span>: %s</p>
+        </div>
+    </div>
+</div>';
+
+    foreach ($this->resumes as $r) {
+        $myAd = '';
+        if (!empty($userId) && $userId == $r->userId) {
+            $myAd = ' - <span class="cr">' . __('myResume') . '</span>';
+        }
+        /*    $resumeBlock
+              .= '<div class="vacancyBlock">
+                                <div class="vacancyHead clearfix" id="r_h_Id_' . $r->resumeId . '">
+                                    <div class="vacancySeat">' . $r->seat . '</div>
+                                    <div class="vacancyDate visible-for-medium-up">(' . __('createdAt') . ': ' . date('Y-m-d', strtotime($r->createdAt)) . ')' .
+              $myAd . '</div>
+                                    <div class="vacancyActions"><ul class="button-group">';
+            $resumeBlock .= $this->iconButton('', 'plus pl10', __('open'), 'r_plus_Id_' . $r->resumeId, 'fs20 plus');
+            $resumeBlock .= $this->iconButton('', 'minus pl10', __('close'), 'r_minus_Id_' . $r->resumeId, 'fs20 minus hideElem');
+            $resumeBlock .= '</ul></div>'; // vacancyActions
+            $resumeBlock .= '</div>'; // vacancyHead
+            $resumeBlock .= '<div class="vacancyInformation hideElem clearfix" id="r' . $r->resumeId . '">
+                                <div class="vacancyInnerInfo">'; // vacancyInformation and vacancyInnerInfo
+    
+            if (!$r->isTemporary && empty($userId) && $userId != $r->userId)
+            {
+              $resumeBlock .= '<a href="' . $this->domainLink(1, true) . 'profile/index/messages/rid/' .
+                $r->resumeId . '" class="button  tiny  adButton">' . __('contact_author') . '</a>';
+            }
+    
+            $resumeBlock
+              .= '<ul class="small-block-grid-1 medium-block-grid-3 large-block-grid-3">
+                            <li><h3 class="fdU">' . __('experience') . '</h3><hr class="adHr">
+                            <p class="pl10">' . $r->experience . '</p></li>
+                            <li><h3 class="fdU">' . __('expectations') . '</h3><hr class="adHr">
+                            <p class="pl10">' . $r->expectations . '</p></li>
+                            <li><h3 class="fdU">' . __('goals') . '</h3><hr class="adHr">
+                            <p class="pl10">' . $r->goals . '</p></li></ul>
+                            <h3 class="fdU">' . __('tags') . '</h3><hr class="adHr">';
+            if (!empty($r->tags) && is_object($r->tags))
+            {
+              $tags = $r->tags->getItems();
+              $resumeBlock .= '<ul class="pl10 tags">';
+              foreach ($tags as $t)
+              {
+                $resumeBlock .= '<li class="post-tag"><span class="tag">' . $t->tagName . '</span></li>';
+              }
+              $resumeBlock .= '</ul>';
+            }
+            else
+            {
+              unset($resumeBlock);
+              continue;
+            }
+            $resumeBlock .= '</div>'; //vacancyInnerInfo
+            $resumeBlock .= '<div class="vacancyDateStatus right visible-for-small-down">'; // vacancyDateStatus
+            $resumeBlock .= '<p><span class="fdU">' . __('createdAt') . '</span>: ' . date('Y-m-d', strtotime($r->createdAt)) . '</p>';
+            $resumeBlock .= '</div>'; // vacancyDateStatus
+            $resumeBlock .= '</div>'; // vacancyInformation
+            $resumeBlock .= '</div>'; // vacancyBlock*/
+
+        $iconButtons = $this->iconButton('', 'plus pl10', __('open'), 'r_plus_Id_' . $r->resumeId, 'fs20 plus');
+        $iconButtons .= $this->iconButton(
+            '',
+            'minus pl10',
+            __('close'),
+            'r_minus_Id_' . $r->resumeId,
+            'fs20 minus hideElem'
+        );
+        $messageButton = '';
+        $tagsBlock     = '';
+        if (!$r->isTemporary && !empty($userId) && $userId != $r->userId) {
+            $messageButton = '<a href="' . $this->domainLink(1, true) . 'profile/index/messages/vid/' .
+                $r->resumeId . '" class="button  tiny  adButton">' . __('contact_author') . '</a>';
+        }
+        if (!empty($r->tags) && is_object($r->tags)) {
+            $tags      = $r->tags->getItems();
+            $tagsBlock = '<ul class="tags">';
+            foreach ($tags as $t) {
+                $tagsBlock .= '<li class="post-tag"><span class="tag">' . $t->tagName . '</span></li>';
+            }
+            $tagsBlock .= '</ul>';
+        } else {
+            //unset($resumeBlock);
+            continue;
+        }
+        $resumeBlock .= sprintf(
+            $resumeTemplate,
+            $r->resumeId,
+            $r->seat,
+            date('Y-m-d', strtotime($r->createdAt)),
+            $myAd,
+            $iconButtons,
+            $r->resumeId,
+            $messageButton,
+            __('experience'),
+            $r->experience,
+            __('expectations'),
+            $r->expectations,
+            __('goals'),
+            $r->goals,
+            __('tags'),
+            $tagsBlock,
+            '',
+            date('Y-m-d', strtotime($r->createdAt))
+        );
+    }
+
+    if ($this->resumes->getPaginator()) {
+        $resumeBlock .= $this->paginationControl(
+            $this->resumes->getPaginator(),
+            'Sliding',
+            '_paginationResumes.phtml'
+        );
+    }
+}
+$resumeBlock .= '</div>';
+echo $resumeBlock;

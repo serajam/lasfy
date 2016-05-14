@@ -1,0 +1,87 @@
+<?php
+$body
+    = '<div  class="users-list list">
+                <table class="responsive default-table">
+                <thead>
+                <tr>
+                    <th>№</th>
+                    <th>' . __('login') . '</th>
+					<th>' . __('role') . '</th>
+					<th>' . __('email') . '</th>
+					<th>' . __('name') . '</th>
+					<th>' . __('isBanned') . '</th>
+					<th>' . __('isActivated') . '</th>
+                    <th>' . __('providerName') . '</th>
+                    <th>' . __('actions') . '</th>
+                </tr>
+                </thead>';
+foreach ($this->users as $key => $v) {
+    $checkedIsBanned    = '';
+    $checkedIsActivated = '';
+    if ($v->isBanned) {
+        $checkedIsBanned = 'checked="checked"';
+    }
+    if ($v->isActivated) {
+        $checkedIsActivated = 'checked="checked"';
+    }
+    $body
+        .= '<tr>
+                    <td>' . ($key + 1) . '</td>
+                    <td>' . $v->login . '</td>
+                    <td>' . $v->roleName . '</td>
+                    <td>' . $v->email . '</td>
+                    <td>' . $v->name . '</td>
+                    <td>
+                        <input id="ban_' . $v->userId . '"
+                            class="checkedParam" value="' . $v->userId . '"
+							' . $checkedIsBanned . ' type="checkbox">
+					</td>
+                    <td>
+                        <input id="active_' . $v->userId . '"
+                            class="checkedParam" value="' . $v->userId . '"
+							' . $checkedIsActivated . '	type="checkbox">
+					</td>
+                    <td>' . $v->providerName . '</td>
+                    <td>
+                       <div class="button-bar"><ul class="button-group">
+                            ' . $this->iconButton(
+            $this->host . 'users/edit-user/userId/' . $v->userId,
+            'pencil',
+            __('edit'),
+            '',
+            'edit-user'
+        ) . '
+                            ' . $this->iconButton(
+            $this->host . 'users/edit-password/userId/' . $v->userId,
+            'lock',
+            __('edit_password'),
+            '',
+            'edit-password'
+        ) .
+        $this->iconButton(
+            $this->host . 'users/change-user-role/userId/' . $v->userId,
+            'crown',
+            __('change_role'),
+            '',
+            'change_role'
+        ) . $this->iconButton(
+            $this->host . 'users/user-details/userId/' . $v->userId,
+            'torso',
+            __('viewUser'),
+            '',
+            'userDetails'
+        ) . $this->iconButton(
+            $this->host . 'users/delete-user/userId/' . $v->userId,
+            'x',
+            __('delete'),
+            '',
+            'delete'
+        ) . '
+                        </ul></div>
+                    </td>
+                </tr>';
+}
+$body .= '</table></div>';
+
+echo $body;
+ 

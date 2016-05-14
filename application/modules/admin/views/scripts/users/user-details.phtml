@@ -1,0 +1,78 @@
+<?php
+echo $this->notification($this->service);
+
+$types = Zend_Registry::get('types');
+
+$tableUserProfile = '<div  class="users-list list">
+                <table class="responsive default-table">
+                <thead>
+                <tr>
+                    <th>' . __('field') . '</th>
+                    <th>' . __('value') . '</th>
+                </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>' . __('userId') . '</td>
+                        <td>' . $this->user['userId'] . '</td>
+                    </tr>
+                    <tr>
+                        <td>' . __('name') . '</td>
+                        <td>' . $this->user['name'] . '</td>
+                    </tr>
+                    <tr>
+                        <td>' . __('login') . '</td>
+                        <td>' . $this->user['login'] . '</td>
+                    </tr>
+                    <tr>
+                        <td>' . __('email') . '</td>
+                        <td>' . $this->user['email'] . '</td>
+                    </tr>
+                    <tr>
+                        <td>' . __('language') . '</td>
+                        <td>' . $this->user['language'] . '</td>
+                    </tr>
+                    <tr>
+                        <td>' . __('userType') . '</td>
+                        <td>' . $types['userType'][$this->user['type']] . '</td>
+                    </tr>
+                    <tr>
+                        <td>' . __('isBanned') . '</td>
+                        <td>' . $types['boolean'][$this->user['isBanned']] . '</td>
+                    </tr>
+                    <tr>
+                        <td>' . __('isActivated') . '</td>
+                        <td>' . $types['boolean'][$this->user['isActivated']] . '</td>
+                    </tr>
+                    <tr>
+                        <td>' . __('lastLoginDate') . '</td>
+                        <td>' . $this->user['lastLoginDate'] . '</td>
+                    </tr>
+                    <tr>
+                        <td>' . __('registrationDate') . '</td>
+                        <td>' . $this->user['registrationDate'] . '</td>
+                    </tr>
+                    <tr>
+                        <td>' . __('userProfileIdentifier') . '</td>
+                        <td>' . $this->user['userProfileIdentifier'] . '</td>
+                    </tr>
+                    <tr>
+                        <td>' . __('providerName') . '</td>
+                        <td>' . $this->user['providerName'] . '</td>
+                    </tr>
+                </tbody>
+                </table>';
+
+$box = '';
+$box = '<div class="row large-8">' .
+    '<div class="section-container auto" data-section="auto" data-options="deep-linking: true;">';
+
+$box
+    .= '<section>
+            <p class="title" data-section-title><a href="#userProfile">' . __('userProfile') . '</a></p>
+            <div class="content" data-slug="userProfile" data-section-content>
+                ' . $tableUserProfile . '
+            </div>
+        </section>';
+
+echo $box;

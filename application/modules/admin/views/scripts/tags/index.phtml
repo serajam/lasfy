@@ -1,0 +1,83 @@
+<?php
+$host        = $this->domainLink();
+$clearFilter = $host . $this->controller . '/index/';
+echo $this->notification($this->service);
+echo '<div id="' . $this->container . ' row">';
+echo '<div class="row">';
+$editLink = $host . 'tags/edit/';
+echo $this->buttonLink(
+    $editLink,
+    __('add_tag'),
+    'id="add-' . $this->container . '"',
+    'small'
+);
+
+$searchForm = $this->service->getFormLoader()->getForm('TagSearchForm');
+echo $searchForm;
+echo '<hr>';
+
+$actions = [
+    'edit-' . $this->container    => [
+        'link'       => $host . 'tags/edit/',
+        'icon_class' => 'pencil',
+    ],
+    'disable-' . $this->container => [
+        'link'       => $host . 'tags/disable/',
+        'icon_class' => 'minus',
+    ],
+    'delete-' . $this->container  => [
+        'link'       => $host . $this->controller . '/delete/',
+        'icon_class' => 'trash',
+    ]
+];
+$fields  = [
+    'tagName' => ['key' => 'tagName'],
+];
+
+if (!empty($this->collection) && $this->collection->count() > 0) {
+    echo '<div class="row">';
+    /** @var Job_Tags_TagModel $tag */
+    $i = 1;
+    foreach ($this->collection as $tag) {
+        $end = '';
+        if ($this->collection->isLast($i)) {
+            $end = ' end';
+        }
+        ++$i;
+        $menu = Core_View_Helper_Html_EditorList::buildActions($actions, $tag);
+        echo ' <div class="tag-panel small-3 columns' . $end . '">
+                <div class="columns small-8">' . $tag->tagName . '</div>
+                <div class="columns small-4">' . $menu . '</div>
+            </div>';
+    }
+    echo '</div>';
+
+    echo '<hr>';
+    echo '<div class="row">';
+    echo $this->paginationControl(
+        $this->collection->getPaginator(),
+        'Sliding',
+        'tags/_pagination.phtml'
+    );
+    echo '</div>';
+}
+
+?>
+    </div>
+    </div>
+<?php
+echo $this->partial(
+    $this->controller . '/partials/_windows.phtml',
+    [
+        'container' => $this->container,
+        'service'   => $this->service
+    ]
+);
+$this->scripts = $this->partial(
+    $this->controller . '/partials/_ajaxHelpers.phtml',
+    [
+        'container' => $this->container,
+        'service'   => $this->service
+    ]
+);
+?>
