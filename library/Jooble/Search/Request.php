@@ -4,6 +4,7 @@
  * Class Jooble_Search_Request
  *
  * @author Fedor Petryk
+ * @deprecated 
  */
 class Jooble_Search_Request
 {

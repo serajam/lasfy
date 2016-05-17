@@ -12,33 +12,53 @@ class Jooble_Search_ResponseParser
      */
     protected $vacancies;
 
-    public function __construct()
+    /**
+     * Jooble_Search_ResponseParser constructor.
+     *
+     * @param Jooble_Model_Vacancies $collection
+     */
+    public function __construct(Jooble_Model_Vacancies $collection)
     {
-        $this->vacancies = new Jooble_Model_Vacancies();
+        $this->vacancies = $collection;
     }
 
     /**
-     * @param $responseXml
+     * @param string $response
      */
-    public function parse($responseXml)
+    public function parse($response)
     {
-        $xml = new SimpleXMLElement($responseXml);
+        $jobs = json_decode($response);
 
-        $this->vacancies->setPagesCount((int)$xml->general->page_count);
+        $this->validate($jobs);
 
-        foreach ($xml->messages->msg as $message) {
+        $this->vacancies->setPagesCount(floor((int)$jobs->totalCount / count($jobs->jobs)));
+
+        foreach ($jobs->jobs as $job) {
             $vacancy = new Jooble_Model_Vacancy();
-            $vacancy->setPosition((string)strip_tags($message->position));
-            $vacancy->setRegion((string)strip_tags($message->region));
-            $vacancy->setDescription((string)strip_tags($message->desc));
-            $vacancy->setLastUpdate((string)strip_tags($message->updated));
-            $vacancy->setSalary((string)strip_tags($message->salary));
-            $vacancy->setSourceUrl((string)strip_tags($message->sources->source->url));
-            $vacancy->setSource((string)strip_tags($message->sources->source->name));
-            $vacancy->setPrice((string)strip_tags($message->price));
-            $vacancy->setExternalId((int)strip_tags($message['id']));
+            $vacancy->setPosition((string)strip_tags($job->title));
+            $vacancy->setRegion((string)strip_tags($job->location));
+            $vacancy->setDescription((string)html_entity_decode(strip_tags($job->snippet)));
+            $vacancy->setSalary((string)strip_tags($job->salary));
+            $vacancy->setSourceUrl((string)strip_tags($job->link));
+            $vacancy->setSource((string)strip_tags($job->source));
+            if (property_exists($job, "company")) {
+                $vacancy->setCompany((string)strip_tags($job->company));
+            }
+            $vacancy->setExternalId((int)strip_tags($job->id));
 
             $this->vacancies->addVacancy($vacancy);
+        }
+    }
+
+    /**
+     * @param $response
+     *
+     * @throws Jooble_Exception_InvalidResponse
+     */
+    protected function validate($response)
+    {
+        if (isset($response->statusCode) && $response->statusCode != 200) {
+            throw new Jooble_Exception_InvalidResponse($response->message . "\n" . $response->details);
         }
     }
 

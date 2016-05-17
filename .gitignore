@@ -7,3 +7,5 @@ library/Zend/*
 public/images/captcha/*
 nbproject/
 www/uploads
+autoload_classmap.php
+library/Jooble/log
