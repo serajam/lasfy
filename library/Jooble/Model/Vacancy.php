@@ -62,11 +62,9 @@ class Jooble_Model_Vacancy
     protected $sourceUrl;
 
     /**
-     * Price ???
-     *
      * @var String
      */
-    protected $price;
+    protected $company;
 
     /**
      * @return String
@@ -210,5 +208,21 @@ class Jooble_Model_Vacancy
     public function setExternalId($externalId)
     {
         $this->externalId = $externalId;
+    }
+
+    /**
+     * @return String
+     */
+    public function getCompany()
+    {
+        return $this->company;
+    }
+
+    /**
+     * @param String $company
+     */
+    public function setCompany($company)
+    {
+        $this->company = $company;
     }
 }

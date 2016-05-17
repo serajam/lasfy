@@ -1,8 +1,9 @@
 <?php
 
-require_once('Search/Request.php');
+require_once('Search/RequestBuilder.php');
 require_once('Search/ResponseParser.php');
 require_once('Model/Vacancy.php');
+require_once('Model/Vacancies.php');
 require_once('Exception/InvalidResponse.php');
 
 /**
@@ -20,7 +21,7 @@ class Jooble_ApiConnector
     protected $regions;
 
     /**
-     * @var Jooble_Search_Request
+     * @var Jooble_Search_RequestBuilder
      */
     protected $request;
 
@@ -51,6 +52,17 @@ class Jooble_ApiConnector
     protected $apiUrl;
 
     /**
+     * Jooble api key
+     * @var string
+     */
+    protected $apiKey;
+
+    /**
+     * @var array
+     */
+    protected $headers = ['Content-Type: application/x-www-form-urlencoded'];
+
+    /**
      * @param $configPath
      */
     public function __construct($configPath = null)
@@ -62,6 +74,7 @@ class Jooble_ApiConnector
         $this->config  = parse_ini_file($configPath);
         $this->regions = parse_ini_file('regions.ini')['regions'];
         $this->apiUrl  = $this->config['apiUrl'];
+        $this->apiKey  = $this->config['apiKey'];
         $this->logDir  = $this->config['logDir'];
     }
 
@@ -71,12 +84,12 @@ class Jooble_ApiConnector
      *
      * @return Jooble_Model_Vacancies | bool
      */
-    public function search(array $tags, $page)
+    public function search(array $tags, $page = 1)
     {
         try {
             $this->buildRequest($tags, $page);
-            $responseXml = $this->sendRequest();
-            $this->parseResponse($responseXml);
+            $response = $this->sendRequest();
+            $this->parseResponse($response);
 
             if ($this->responseParser) {
                 return $this->responseParser->getVacancies();
@@ -84,7 +97,7 @@ class Jooble_ApiConnector
 
             return [];
         } catch (Exception $e) {
-            error_log('Error occurred: ' . $e->getMessage());
+            error_log('Error occurred: ' . $e->getMessage() . " in " . __METHOD__);
 
             return [];
         }
@@ -100,52 +113,63 @@ class Jooble_ApiConnector
      */
     protected function buildRequest(array $tags, $page)
     {
-
-        $this->request = new Jooble_Search_Request(
-            $tags, $this->config['encoding'],
-            $this->config['offersCount'],
-            $this->config['sourcesCount'],
-            $this->regions,
-            $page
-        );
+        $this->request = new Jooble_Search_RequestBuilder($tags, $this->regions, $page);
         $this->request->build();
     }
 
     protected function sendRequest()
     {
-        $opts = [
-            'http' =>
-                [
-                    'method'  => 'POST',
-                    'header'  => "Content-Type: text/xml\r\n"
-                        . 'Accept-Encoding: gzip,deflate' . "\r\n",
-                    'content' => $this->request->getXml()->asXML(),
-                    'timeout' => 60
-                ]
-        ];
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, $this->apiUrl . "" . $this->apiKey);
+        curl_setopt($ch, CURLOPT_POST, 1);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $this->request->getEncoded());
+        curl_setopt($ch, CURLOPT_HTTPHEADER, $this->headers);
 
-        $responseXml = @file_get_contents($this->apiUrl, false, stream_context_create($opts));
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        $response = curl_exec($ch);
+        curl_close($ch);
 
         if ($this->config['logEnabled']) {
-            file_put_contents(
-                __DIR__ . '/' . $this->logDir . sprintf('request_%s.xml', date('Y-m-d_h_m_i')),
-                $this->request->getRawXmlRequest()
-            );
-            file_put_contents(__DIR__ . '/' . $this->logDir . sprintf('response_%s.xml', date('Y-m-d_h_m_i')), $responseXml);
+            file_put_contents($this->getLogDir() . $this->getLogFileName('request'), (string)$this->request->getEncoded());
+            file_put_contents($this->getLogDir() . $this->getLogFileName('response'), (string)$response);
         }
 
-        return $responseXml;
+        return $response;
     }
 
     /**
-     * @param String $responseXml
+     * @param string $name
+     *
+     * @return string
+     */
+    protected function getLogFileName($name)
+    {
+        return sprintf("{$name}_%s.json", date('Y-m-d_h_m_i'));
+    }
+
+    /**
+     * @return string
+     */
+    protected function getLogDir()
+    {
+        return __DIR__ . '/' . $this->logDir;
+    }
+
+    /**
+     * @param String $response
      *
      * @return array
      */
-    protected function parseResponse(&$responseXml)
+    protected function parseResponse(&$response)
     {
-        $this->responseParser = new Jooble_Search_ResponseParser();
-        $this->responseParser->parse($responseXml);
+        try {
+            $this->responseParser = new Jooble_Search_ResponseParser(new Jooble_Model_Vacancies());
+            $this->responseParser->parse($response);
+        } catch (Jooble_Exception_InvalidResponse $e) {
+            error_log("Error: " . $e->getMessage() . " in " . __METHOD__);
+
+            return [];
+        }
     }
 
     /**
