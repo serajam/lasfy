@@ -26,6 +26,11 @@ class Job_Ads_Jooble_VacancyAdapter
         $vacancy->source             = $joobleModelVacancy->getSource();
         $vacancy->salary             = $joobleModelVacancy->getSalary();
 
+        if ($joobleModelVacancy->getCompany()) {
+            $vacancy->setTags([$joobleModelVacancy->getCompany()]);
+            $vacancy->setCompany($joobleModelVacancy->getCompany());
+        }
+
         return $vacancy;
     }
 }

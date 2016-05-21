@@ -34,12 +34,13 @@ class Job_Ads_TableGateway extends Core_DbTable_Base implements Job_Ads_IAdsGate
      * @param int    $page
      * @param string $startDate
      * @param string $endDate
+     * @param array $tags
      *
      * @return Zend_Paginator
      *
      * @author Fedor Petryk
      */
-    public function fetchByPeriod($page, $startDate, $endDate)
+    public function fetchByPeriod($page, $startDate, $endDate, array $tags)
     {
         $query = $this->buildQuery();
         $this->filterByPeriod($query, $startDate, $endDate);

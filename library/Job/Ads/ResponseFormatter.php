@@ -22,6 +22,7 @@ class Job_Ads_ResponseFormatter
             return $rArray;
         }
 
+        /** @var Job_Ads_Model_Vacancy $d */
         foreach ($data as $d) {
             $tags = $d->getTagsArray();
             if ($this->compliance && !empty($this->tags)) {
@@ -40,6 +41,7 @@ class Job_Ads_ResponseFormatter
 
             $dArray         = $d->toArray();
             $dArray['tags'] = $tagsFormatted;
+            $dArray['company'] = $d->getCompany();
             $rArray[]       = $dArray;
         }
 

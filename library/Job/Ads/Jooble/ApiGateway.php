@@ -18,9 +18,9 @@ class Job_Ads_Jooble_ApiGateway implements Job_Ads_IAdsGateway
         $this->connector = new Jooble_ApiConnector();
     }
 
-    public function fetchByPeriod($page, $startDate, $endDate)
+    public function fetchByPeriod($page, $startDate, $endDate, array $tags)
     {
-        $this->vacancies = $this->connector->search([], $page);
+        $this->vacancies = $this->connector->search($tags, $page);
         $pagesCount      = count($this->vacancies) ? $this->vacancies->getPagesCount() : 1;
 
         return $this->paginationNull($page, $pagesCount, $this->itemsPerPage);

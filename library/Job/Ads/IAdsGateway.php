@@ -12,7 +12,7 @@ interface Job_Ads_IAdsGateway
      */
     public function fetchByTags(array $tags, $page);
 
-    public function fetchByPeriod($page, $startDate, $endDate);
+    public function fetchByPeriod($page, $startDate, $endDate, array $tags);
 
     public function setItemsPerPage($count);
 }

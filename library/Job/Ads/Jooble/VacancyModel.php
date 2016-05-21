@@ -24,6 +24,7 @@ class Job_Ads_Jooble_VacancyModel extends Job_Ads_Model_Vacancy
         'jooble'             => 1,
         'link'               => null,
         'source'             => null,
-        'salary'             => null
+        'salary'             => null,
+        'company'            => null,
     ];
 }

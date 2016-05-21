@@ -50,14 +50,15 @@ class Job_Ads_Jooble_VacanciesRepository extends Job_Ads_Repository
      * @param int    $page
      * @param String $starDate
      * @param String $endDate
+     * @param array $tags
      *
      * @return Core_Collection_Super
      *
      * @author Fedor Petryk
      */
-    public function fetchByPeriod($page, $starDate, $endDate)
+    public function fetchByPeriod($page, $starDate, $endDate, array $tags)
     {
-        $this->paginator = $this->gateway->fetchByPeriod($page, $starDate, $endDate);
+        $this->paginator = $this->gateway->fetchByPeriod($page, $starDate, $endDate, $tags);
 
         return $this->getCollection($this->gateway->getVacancies());
     }

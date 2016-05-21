@@ -58,7 +58,11 @@ class Jooble_Search_ResponseParser
     protected function validate($response)
     {
         if (isset($response->statusCode) && $response->statusCode != 200) {
-            throw new Jooble_Exception_InvalidResponse($response->message . "\n" . $response->details);
+            $error = $response->message;
+            if (property_exists($response, "details")) {
+                $error .= "\n" . $response->details;
+            }
+            throw new Jooble_Exception_InvalidResponse($error);
         }
     }
 
