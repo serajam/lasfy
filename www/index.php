@@ -8,7 +8,6 @@ defined('APPLICATION_ENV')
 
 date_default_timezone_set('Europe/Kiev');
 setlocale(LC_CTYPE, 'en_EN.UTF-8');
-ini_set('iconv.internal_encoding', 'UTF-8');
 define('PAGE_LOAD_TIME', 0);
 defined('BASE_PATH') || define('BASE_PATH', realpath(dirname(__FILE__)));
 

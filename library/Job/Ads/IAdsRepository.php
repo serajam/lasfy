@@ -4,7 +4,7 @@ interface IAdsRepository
 {
     public function fetchByTags(array $tags, $page);
 
-    public function fetchByPeriod($page, $starDate, $endDate);
+    public function fetchByPeriod($page, $starDate, $endDate, array $tags);
 
     public function getCollection($data);
 

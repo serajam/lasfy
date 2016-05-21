@@ -56,21 +56,23 @@ class Job_Ads_Model_Vacancy extends Core_Model_Super
 
     public function setTags($tags)
     {
-        if (!empty($tags)) {
-            foreach ($tags as $id => $t) {
-                $tag = new Tag();
-                $tag->populate(
-                    [
-                        'tagId'   => $id,
-                        'tagName' => $t
-                    ]
-                );
-                if ($this->tags instanceof TagsCollection) {
-                    $this->tags->add($tag);
-                } else {
-                    $this->tags = new TagsCollection();
-                    $this->tags->add($tag);
-                }
+        if (empty($tags)) {
+            return false;
+        }
+
+        foreach ($tags as $id => $t) {
+            $tag = new Tag();
+            $tag->populate(
+                [
+                    'tagId'   => $id,
+                    'tagName' => $t
+                ]
+            );
+            if ($this->tags instanceof TagsCollection) {
+                $this->tags->add($tag);
+            } else {
+                $this->tags = new TagsCollection();
+                $this->tags->add($tag);
             }
         }
     }

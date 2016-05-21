@@ -189,7 +189,8 @@ class Job_Ads_Service extends Job_Tags_TagsService
         IAdsRepository $repository, Job_Ads_ResponseFormatter $formatter, $page, $startDate, $endDate
     )
     {
-        $collection = $repository->fetchByPeriod($page, $startDate, $endDate);
+        $tags       = [Zend_Registry::get('appConfig')["defaultRegion"]];
+        $collection = $repository->fetchByPeriod($page, $startDate, $endDate, $tags);
         count($collection) ?: $this->makeEmptyResponse($repository->getType());
         $this->fillWithTags($collection, $repository->getTagsJoinTable(), $repository->getPrimary(), []);
 
