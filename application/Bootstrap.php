@@ -9,6 +9,57 @@
  */
 class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
 {
+
+    /**
+     *
+     * Initialization of main configuration
+     * See configs/application.ini
+     */
+    protected function _initConfiguration()
+    {
+        $app    = $this->getApplication();
+        $config = $app->getOptions();
+        Zend_Registry::set('appConfig', $config);
+        Zend_Locale::setDefault($config['locale'][$config['lang']]);
+        date_default_timezone_set($config['timezone']);
+        setlocale(LC_CTYPE, $config['locale'][$config['lang']]);
+        if (APPLICATION_ENV == 'development') {
+            error_reporting(E_ALL);
+            ini_set("log_errors", 1);
+            if (isset($config['phpsettings'])) {
+                foreach ($config['phpsettings'] as $setting => $value) {
+                    ini_set($setting, $value);
+                }
+            }
+        }
+
+        ini_set("error_log", APPLICATION_PATH . "/log/error.log");
+
+        // get page from cache avoiding any further operations
+        if (APPLICATION_ENV != 'development' && $config['cache']['pages']) {
+            $this->_usePageCache();
+        }
+    }
+
+    /**
+     *
+     * Initializing front controller
+     */
+    protected function _initController()
+    {
+        $this->bootstrap('FrontController');
+        $controller = $this->getResource('FrontController');
+        $modules    = $controller->getControllerDirectory();
+        $controller->setParam('prefixDefaultModule', true);
+        $controller->registerPlugin(new Zend_Controller_Plugin_ErrorHandler());
+        $controller->registerPlugin(new Core_Modules_Loader($modules));
+        $controller->registerPlugin(new Core_Controller_Plugin_Language());
+
+        //$controller->throwExceptions(true);
+
+        return $controller;
+    }
+
     public function _initAdditionalConfigs()
     {
         $conf = new Zend_Config_Ini(APPLICATION_PATH . '/config/system_types.ini');
@@ -445,37 +496,6 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
     }
 
     /**
-     *
-     * Initialization of main configuration
-     * See configs/application.ini
-     */
-    protected function _initConfiguration()
-    {
-        $app    = $this->getApplication();
-        $config = $app->getOptions();
-        Zend_Registry::set('appConfig', $config);
-        Zend_Locale::setDefault($config['locale'][$config['lang']]);
-        date_default_timezone_set($config['timezone']);
-        setlocale(LC_CTYPE, $config['locale'][$config['lang']]);
-        if (APPLICATION_ENV == 'development') {
-            error_reporting(E_ALL);
-            ini_set("log_errors", 1);
-            if (isset($config['phpsettings'])) {
-                foreach ($config['phpsettings'] as $setting => $value) {
-                    ini_set($setting, $value);
-                }
-            }
-        }
-
-        ini_set("error_log", APPLICATION_PATH . "/log/error.log");
-
-        // get page from cache avoiding any further operations
-        if (APPLICATION_ENV != 'development' && $config['cache']['pages']) {
-            $this->_usePageCache();
-        }
-    }
-
-    /**
      * CACHE FULL PAGE
      *
      * @return bool
@@ -531,25 +551,6 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
         }
 
         $pagesCache->start();
-    }
-
-    /**
-     *
-     * Initializing front controller
-     */
-    protected function _initController()
-    {
-        $this->bootstrap('FrontController');
-        $controller = $this->getResource('FrontController');
-        $modules    = $controller->getControllerDirectory();
-        $controller->setParam('prefixDefaultModule', true);
-        $controller->registerPlugin(new Zend_Controller_Plugin_ErrorHandler());
-        $controller->registerPlugin(new Core_Modules_Loader($modules));
-        $controller->registerPlugin(new Core_Controller_Plugin_Language());
-
-        //$controller->throwExceptions(true);
-
-        return $controller;
     }
 
     protected function _initAutoload()
